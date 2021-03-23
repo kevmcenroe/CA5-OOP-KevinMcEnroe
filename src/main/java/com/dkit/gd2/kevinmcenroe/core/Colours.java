@@ -1,4 +1,4 @@
-package com.dkit.oopca5.core;
+package com.dkit.gd2.kevinmcenroe.core;
 
 /*The core package should contain all of the classes
   that are shared between the Client and Server

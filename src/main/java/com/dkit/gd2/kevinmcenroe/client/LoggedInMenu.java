@@ -1,4 +1,4 @@
-package com.dkit.oopca5.client;
+package com.dkit.gd2.kevinmcenroe.client;
 
 public enum LoggedInMenu {
     QUIT,

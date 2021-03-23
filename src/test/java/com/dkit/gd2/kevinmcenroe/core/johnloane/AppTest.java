@@ -1,4 +1,4 @@
-package com.dkit.oopca5.core.johnloane;
+package com.dkit.gd2.kevinmcenroe.core.johnloane;
 
 import static org.junit.Assert.assertTrue;
 
