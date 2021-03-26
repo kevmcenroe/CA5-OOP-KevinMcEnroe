@@ -1,6 +1,6 @@
 package com.dkit.gd2.kevinmcenroe.reference;
 
-import com.dkit.gd2.johnloane.exceptions.DAOException;
+import com.dkit.gd2.kevinmcenroe.exceptions.DAOException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

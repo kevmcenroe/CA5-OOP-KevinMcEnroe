@@ -1,7 +1,7 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
-import com.dkit.gd2.johnloane.dto.User;
-import com.dkit.gd2.johnloane.exceptions.DAOException;
+import com.dkit.gd2.kevinmcenroe.core.Student;
+import com.dkit.gd2.kevinmcenroe.exceptions.DAOException;
 import com.dkit.gd2.kevinmcenroe.reference.MySqlDAO;
 
 import java.sql.Connection;
@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 //Adapted from sample code
-public class MySqlUserDAO extends MySqlDAO implements IUserDAOInterface
+public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 {
 
     @Override
-    public List<User> findAllUsers() throws DAOException
+    public List<Student> findAllUsers() throws DAOException
     {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<User> users = new ArrayList<>();
+        List<Student> users = new ArrayList<>();
 
         try
         {
@@ -32,13 +32,12 @@ public class MySqlUserDAO extends MySqlDAO implements IUserDAOInterface
 
             while (rs.next())
             {
-                int userId = rs.getInt("id");
-                String firstName = rs.getString("first_name");
-                String lastName = rs.getString("last_name");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
+                int caoNumber = rs.getInt("cao_number");
+                String dateOfBirth = rs.getString("date_of_birth");
+                String pass = rs.getString("password");
+                String email = rs.getString("email");
 
-                User readInUser = new User(userId, firstName, lastName, username, password);
+                Student readInUser = new Student(caoNumber, dateOfBirth, pass, email);
                 users.add(readInUser);
             }
         } catch (SQLException se)
@@ -68,13 +67,14 @@ public class MySqlUserDAO extends MySqlDAO implements IUserDAOInterface
         return users;
     }
 
+    // Utilising reference material provided
     @Override
-    public User findUserByUsernamePassword(String username, String password) throws DAOException
+    public Student findUserByCAONumberPassword(String caoNumber, String password) throws DAOException
     {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        User returnedUser = null;
+        Student returnedUser = null;
 
         try
         {
@@ -82,20 +82,19 @@ public class MySqlUserDAO extends MySqlDAO implements IUserDAOInterface
 
             String query = "select * from user where username = ? and password = ?";
             ps = con.prepareStatement(query);
-            ps.setString(1, username);
+            ps.setString(1, caoNumber);
             ps.setString(2, password);
 
             rs = ps.executeQuery();
 
             if (rs.next())
             {
-                int userId = rs.getInt("id");
-                String firstName = rs.getString("first_name");
-                String lastName = rs.getString("last_name");
-                String dbusername = rs.getString("username");
-                String dbpassword = rs.getString("password");
+                int gotCaoNumber = rs.getInt("cao_number");
+                String gotDateOfBirth = rs.getString("date_of_birth");
+                String gotPassword = rs.getString("password");
+                String gotEmail = rs.getString("email");
 
-                User readInUser = new User(userId, firstName, lastName, dbusername, dbpassword);
+                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword, gotEmail);
             }
         }
         catch (SQLException se)
