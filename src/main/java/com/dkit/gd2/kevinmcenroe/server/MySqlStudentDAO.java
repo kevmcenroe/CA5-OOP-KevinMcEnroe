@@ -15,7 +15,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 {
 
     @Override
-    public List<Student> findAllUsers() throws DAOException
+    public List<Student> findAllStudents() throws DAOException
     {
         Connection con = null;
         PreparedStatement ps = null;
@@ -31,12 +31,11 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
             while (rs.next())
             {
-                int caoNumber = rs.getInt("cao_number");
-                String dateOfBirth = rs.getString("date_of_birth");
-                String pass = rs.getString("password");
-                String email = rs.getString("email");
+                int gotCaoNumber = rs.getInt("cao_number");
+                String gotDateOfBirth = rs.getString("date_of_birth");
+                String gotPassword = rs.getString("password");
 
-                Student readInUser = new Student(caoNumber, dateOfBirth, pass, email);
+                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword);
                 users.add(readInUser);
             }
         } catch (SQLException se)
@@ -68,7 +67,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
     // Utilising reference material provided
     @Override
-    public Student findUserByCAONumberPassword(String caoNumber, String password) throws DAOException
+    public Student findStudentByCAONumberPassword(String caoNumber, String password) throws DAOException
     {
         Connection con = null;
         PreparedStatement ps = null;
@@ -91,9 +90,8 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
                 int gotCaoNumber = rs.getInt("cao_number");
                 String gotDateOfBirth = rs.getString("date_of_birth");
                 String gotPassword = rs.getString("password");
-                String gotEmail = rs.getString("email");
 
-                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword, gotEmail);
+                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword);
             }
         }
         catch (SQLException se)

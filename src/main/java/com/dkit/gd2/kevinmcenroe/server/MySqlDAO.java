@@ -6,14 +6,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/*
+All of the database functionality should be here. You will need a DAO for each table that you are interacting with in the database
+ */
+
 //Adapted from sample code
 public class MySqlDAO
 {
     public Connection getConnection() throws DAOException
     {
         String driver = "com.mysql.cj.jdbc.Driver";
-        //TODO Update to use new database after confirming test
-        String url = "jdbc:mysql://localhost:3306/kevin_test";
+        String url = "jdbc:mysql://localhost:3306/oop_ca5_kevin_mcenroe";
         String username = "root";
         String password  = "";
 

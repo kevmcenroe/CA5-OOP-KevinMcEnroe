@@ -4,13 +4,11 @@ import com.dkit.gd2.kevinmcenroe.server.IStudentDAOInterface;
 import com.dkit.gd2.kevinmcenroe.server.MySqlStudentDAO;
 import com.dkit.gd2.kevinmcenroe.core.Student;
 import com.dkit.gd2.kevinmcenroe.exceptions.DAOException;
-import com.dkit.gd2.kevinmcenroe.core.Student;
-import com.dkit.gd2.kevinmcenroe.server.IStudentDAOInterface;
-import com.dkit.gd2.kevinmcenroe.server.MySqlStudentDAO;
 
 import java.util.List;
 
 // Adapted from sample code
+// Database driver application
 public class App 
 {
     public static void main( String[] args )
@@ -26,7 +24,7 @@ public class App
     {
         try
         {
-            List<Student> students = IStudentDAO.findAllUsers();
+            List<Student> students = IStudentDAO.findAllStudents();
             printStudents(students);
         }
         catch(DAOException daoe)

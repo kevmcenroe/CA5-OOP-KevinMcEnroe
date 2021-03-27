@@ -154,4 +154,8 @@ public class CAOClient
         }
         System.out.println("Enter the corresponding number to select an option");
     }
+
+    private void requestInput(){
+
+    }
 }
