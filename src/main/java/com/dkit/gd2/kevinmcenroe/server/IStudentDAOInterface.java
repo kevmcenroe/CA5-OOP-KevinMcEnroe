@@ -11,4 +11,5 @@ public interface IStudentDAOInterface
 {
     public List<Student> findAllStudents() throws DAOException;
     public Student findStudentByCAONumberPassword(String caoNumber, String password) throws DAOException;
+    public void registerStudent(Student student) throws DAOException;
 }

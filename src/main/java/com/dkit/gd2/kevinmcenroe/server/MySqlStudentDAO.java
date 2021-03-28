@@ -13,6 +13,67 @@ import java.util.List;
 //Adapted from sample code
 public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 {
+    @Override
+    public void registerStudent(Student student) throws DAOException
+    {
+        int caoNumber = student.getCaoNumber();
+        String dateOfBirth = student.getDayOfBirth();
+        String password = student.getPassword();
+
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        int result = 0;
+        List<Student> users = new ArrayList<>();
+
+        try
+        {
+            con = this.getConnection();
+            //insert into student(cao_number, date_of_birth, password) values(1, "2000-01-01", "password1");
+            String query = "insert into student(cao_number, date_of_birth, password) values(" + "\"" + caoNumber +  "\",\"" + dateOfBirth + "\",\"" + password + "\")";
+            preparedStatement = con.prepareStatement(query);
+            result = preparedStatement.executeUpdate();
+/*
+            while (resultSet.next())
+            {
+                int gotCaoNumber = resultSet.getInt("cao_number");
+                String gotDateOfBirth = resultSet.getString("date_of_birth");
+                String gotPassword = resultSet.getString("password");
+
+                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword);
+                users.add(readInUser);
+            }*/
+        } catch (SQLException se)
+        {
+            throw new DAOException("registerStudent() " + se.getMessage());
+        } finally
+        {
+            try
+            {
+                if (preparedStatement != null)
+                {
+                    preparedStatement.close();
+                }
+                if (con != null)
+                {
+                    freeConnection(con);
+                }
+            } catch (SQLException se)
+            {
+                throw new DAOException("findAllUsers() finally " + se.getMessage());
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public List<Student> findAllStudents() throws DAOException

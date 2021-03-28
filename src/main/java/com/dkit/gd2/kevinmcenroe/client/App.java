@@ -18,6 +18,8 @@ public class App
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
 
         getAllStudents(IStudentDAO);
+        Student sampleStudent = new Student(100, "1999-01-01", "password100");
+        registerStudent(IStudentDAO, sampleStudent);
     }
 
     private static void getAllStudents(IStudentDAOInterface IStudentDAO)
@@ -43,6 +45,20 @@ public class App
         for(Student student : students)
         {
             System.out.println(student);
+        }
+    }
+
+    private static void registerStudent(IStudentDAOInterface IStudentDAO, Student student)
+    {
+        //TODO Check if valid student or already exits
+        try
+        {
+            IStudentDAO.registerStudent(student);
+            //addedStudent.toString();
+        }
+        catch(DAOException daoe)
+        {
+            System.out.println(daoe.getMessage());
         }
     }
 }

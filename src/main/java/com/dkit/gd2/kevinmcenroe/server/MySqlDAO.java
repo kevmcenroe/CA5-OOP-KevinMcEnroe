@@ -1,5 +1,6 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
+import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.exceptions.DAOException;
 
 import java.sql.Connection;
@@ -29,16 +30,16 @@ public class MySqlDAO
         }
         catch(ClassNotFoundException cnfe)
         {
-            System.out.println("Class not found " + cnfe.getMessage());
+            System.out.println(Colours.RED + "Class not found " + cnfe.getMessage() + Colours.RESET);
             System.exit(1);
         }
         catch(SQLException se)
         {
-            System.out.println("Connection failed " + se.getMessage());
+            System.out.println(Colours.RED + "Connection failed " + se.getMessage() + Colours.RESET);
             System.exit(2);
         }
 
-        System.out.println("Connected successfully");
+        System.out.println(Colours.GREEN + "Connected successfully" + Colours.RESET);
         return con;
     }
 
@@ -54,7 +55,7 @@ public class MySqlDAO
         }
         catch(SQLException se)
         {
-            System.out.println("Failed to free the connection " + se.getMessage());
+            System.out.println(Colours.RED + "Failed to free the connection " + se.getMessage() + Colours.RESET);
             System.exit(1);
         }
     }
