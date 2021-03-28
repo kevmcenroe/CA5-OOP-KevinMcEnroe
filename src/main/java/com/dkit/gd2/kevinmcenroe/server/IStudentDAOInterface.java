@@ -8,8 +8,9 @@ import java.util.List;
 //Adapted from sample code
 public interface IStudentDAOInterface
 {
-    public List<Student> findAllStudents() throws DAOException;
-    public Student findStudentByCAONumberPassword(String caoNumber, String password) throws DAOException;
+    //public List<Student> findAllStudents() throws DAOException;
+    //public Student findStudentByCAONumberPassword(String caoNumber, String password) throws DAOException;
     public void registerStudent(Student student) throws DAOException;
     public boolean isRegistered(Student student) throws DAOException;
+    public boolean logInStudent(Student student) throws DAOException;
 }

@@ -62,8 +62,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
     public boolean isRegistered(Student student) throws DAOException
     {
         int caoNumber = student.getCaoNumber();
-        String dateOfBirth = student.getDayOfBirth();
-        String password = student.getPassword();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -81,18 +79,17 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
             if (rs.next())
             {
-                System.out.println("TEST - This student is already registered");
+                System.out.println(Colours.RED + "A student of CAO number " + caoNumber + " is already registered" + Colours.RESET);
                 return true;
             }
             else
             {
-                System.out.println("TEST - This student is not registered");
                 return false;
             }
         }
         catch (SQLException se)
         {
-            throw new DAOException(Colours.RED + "registerStudent() - " + se.getMessage() + Colours.RESET);
+            throw new DAOException(Colours.RED + "isRegistered() - " + se.getMessage() + Colours.RESET);
         }
         finally
         {
@@ -106,12 +103,73 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             }
             catch (SQLException se)
             {
-                throw new DAOException(Colours.RED + "registerStudent() finally - " + se.getMessage() + Colours.RESET);
+                throw new DAOException(Colours.RED + "isRegistered() finally - " + se.getMessage() + Colours.RESET);
             }
         }
     }
 
+    @Override
+    public boolean logInStudent(Student student) throws DAOException {
+        int caoNumber = student.getCaoNumber();
+        String dateOfBirth = student.getDayOfBirth();
+        String password = student.getPassword();
 
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try
+        {
+            con = this.getConnection();
+
+            String query = "select * from student where cao_number = ? and date_of_birth = ? and password = ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, Integer.toString(caoNumber));
+            ps.setString(2, dateOfBirth);
+            ps.setString(3, password);
+
+            rs = ps.executeQuery();
+
+            if (rs.next())
+            {
+                System.out.println(Colours.GREEN + "Successfully logged in (CAO Number: " +caoNumber + ")" + Colours.RESET);
+                return true;
+            }
+            else
+            {
+                System.out.println(Colours.RED + "Invalid log in details" + Colours.RESET);
+                return false;
+            }
+        }
+        catch (SQLException se)
+        {
+            throw new DAOException("logInStudent() " + se.getMessage());
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null)
+                {
+                    rs.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (con != null)
+                {
+                    freeConnection(con);
+                }
+            } catch (SQLException se)
+            {
+                throw new DAOException("logInStudent() finally " + se.getMessage());
+            }
+        }
+    }
+
+    /*
+    //Adapted from reference material
     @Override
     public List<Student> findAllStudents() throws DAOException
     {
@@ -163,7 +221,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
         return users;
     }
 
-    // Utilising reference material provided
+    //Adapted from reference material
     @Override
     public Student findStudentByCAONumberPassword(String caoNumber, String password) throws DAOException
     {
@@ -219,5 +277,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
         }
         return returnedUser;
     }
+    */
 }
 

@@ -24,6 +24,11 @@ public class App
         isRegistered(IStudentDAO, sampleStudent);
         registerStudent(IStudentDAO, sampleStudent);
         isRegistered(IStudentDAO, sampleStudent);
+        logIn(IStudentDAO, sampleStudent);
+
+        Student unregisteredStudent = new Student(999, "1999-01-01", "password100");
+        logIn(IStudentDAO, unregisteredStudent);
+
     }
 
     private static void getAllStudents(IStudentDAOInterface IStudentDAO)
@@ -71,6 +76,18 @@ public class App
         try
         {
             IStudentDAO.isRegistered(student);
+        }
+        catch(DAOException daoe)
+        {
+            System.out.println(daoe.getMessage());
+        }
+    }
+
+    private static void logIn(IStudentDAOInterface IStudentDAO, Student student)
+    {
+        try
+        {
+            IStudentDAO.logInStudent(student);
         }
         catch(DAOException daoe)
         {
