@@ -8,14 +8,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 //Adapted from sample code
 public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 {
     @Override
-    public void registerStudent(Student student) throws DAOException
+    public boolean registerStudent(Student student) throws DAOException
     {
         int caoNumber = student.getCaoNumber();
         String dateOfBirth = student.getDayOfBirth();
@@ -35,7 +33,16 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             ps.setString(2, dateOfBirth);
             ps.setString(3, password);
             ps.executeUpdate();
-            System.out.println(Colours.GREEN + "Student successfully registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
+
+            if(isRegistered(new Student(caoNumber, dateOfBirth, password)))
+            {
+                System.out.println(Colours.GREEN + "Student successfully registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         catch (SQLException se)
         {
@@ -65,7 +72,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
         Connection con = null;
         PreparedStatement ps = null;
-        ResultSet rs = null;
+        ResultSet rs;
 
         try
         {
@@ -83,9 +90,8 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
                 return true;
             }
             else
-            {
                 return false;
-            }
+
         }
         catch (SQLException se)
         {
@@ -143,7 +149,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
         }
         catch (SQLException se)
         {
-            throw new DAOException("logInStudent() " + se.getMessage());
+            throw new DAOException(Colours.RED + "logInStudent() " + se.getMessage() + Colours.RESET);
         }
         finally
         {
@@ -163,7 +169,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
                 }
             } catch (SQLException se)
             {
-                throw new DAOException("logInStudent() finally " + se.getMessage());
+                throw new DAOException(Colours.RED + "logInStudent() finally " + se.getMessage() + Colours.RESET);
             }
         }
     }

@@ -18,9 +18,7 @@ public class App
 
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
 
-        getAllStudents(IStudentDAO);
-
-        Student sampleStudent = new Student(104, "1999-01-01", "password100");
+        Student sampleStudent = new Student(105, "1999-01-01", "password100");
         isRegistered(IStudentDAO, sampleStudent);
         registerStudent(IStudentDAO, sampleStudent);
         isRegistered(IStudentDAO, sampleStudent);
@@ -30,7 +28,7 @@ public class App
         logIn(IStudentDAO, unregisteredStudent);
 
     }
-
+/*
     private static void getAllStudents(IStudentDAOInterface IStudentDAO)
     {
         try
@@ -56,7 +54,7 @@ public class App
             System.out.println(student);
         }
     }
-
+*/
     private static void registerStudent(IStudentDAOInterface IStudentDAO, Student student)
     {
         //TODO Check if valid student or already exits
