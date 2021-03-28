@@ -1,3 +1,4 @@
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
@@ -128,11 +129,5 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                 throw new DAOException(Colours.RED + "getAllCourses() finally " + se.getMessage() + Colours.RESET);
             }
         }
-    }
-
-
-    @Override
-    public Course getCourseByCAONumber(int caoNumber) throws DAOException {
-        return null;
     }
 }

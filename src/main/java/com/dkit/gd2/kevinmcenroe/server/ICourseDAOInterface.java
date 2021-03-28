@@ -9,5 +9,4 @@ public interface ICourseDAOInterface
 {
     public Course getCourseByID(String courseID) throws DAOException;
     public List<Course> getAllCourses() throws DAOException;
-    public Course getCourseByCAONumber(int caoNumber) throws DAOException;
 }
