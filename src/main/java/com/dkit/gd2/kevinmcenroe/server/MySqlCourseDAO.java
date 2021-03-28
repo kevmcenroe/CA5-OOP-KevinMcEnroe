@@ -35,7 +35,14 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                 String gotTitle = rs.getString("title");
                 String gotInstitution = rs.getString("institution");
 
-                return new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
+                Course matchingCourse = new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
+                System.out.println(Colours.GREEN + matchingCourse + Colours.RESET);
+                return matchingCourse;
+            }
+            else
+            {
+                System.out.println(Colours.RED + "A course of courseID " + courseID + " does not exist" + Colours.RESET);
+                return null;
             }
         }
         catch (SQLException se)
@@ -63,7 +70,6 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                 throw new DAOException(Colours.RED + "displayCourseByID() finally " + se.getMessage() + Colours.RESET);
             }
         }
-        return null;
     }
 
     @Override
