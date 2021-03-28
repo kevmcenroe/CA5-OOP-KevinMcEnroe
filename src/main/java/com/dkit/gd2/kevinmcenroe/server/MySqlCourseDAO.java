@@ -54,17 +54,14 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
             try
             {
                 if (rs != null)
-                {
                     rs.close();
-                }
+
                 if (ps != null)
-                {
                     ps.close();
-                }
+
                 if (con != null)
-                {
                     freeConnection(con);
-                }
+
             } catch (SQLException se)
             {
                 throw new DAOException(Colours.RED + "displayCourseByID() finally " + se.getMessage() + Colours.RESET);
@@ -74,8 +71,65 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
 
     @Override
     public List<Course> getAllCourses() throws DAOException {
-        return null;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Course> courses = new ArrayList<>();
+
+        try
+        {
+            con = this.getConnection();
+
+            String query = "select * from course";
+            ps = con.prepareStatement(query);
+
+            rs = ps.executeQuery();
+
+            if (rs.isBeforeFirst())
+            {
+                while(rs.next()) {
+                    String gotCourseID = rs.getString("courseid");
+                    String gotLevel = rs.getString("level");
+                    String gotTitle = rs.getString("title");
+                    String gotInstitution = rs.getString("institution");
+
+                    Course matchingCourse = new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
+                    System.out.println(Colours.GREEN + matchingCourse + Colours.RESET);
+                    courses.add(matchingCourse);
+                }
+                return courses;
+            }
+            else
+            {
+                System.out.println(Colours.RED + "There are no courses in the course table" + Colours.RESET);
+                return null;
+            }
+        }
+        catch (SQLException se)
+        {
+            throw new DAOException(Colours.RED + "getAllCourses() " + se.getMessage() + Colours.RESET);
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null)
+                    rs.close();
+
+                if (ps != null)
+                    ps.close();
+
+                if (con != null)
+                    freeConnection(con);
+
+            } catch (SQLException se)
+            {
+                throw new DAOException(Colours.RED + "getAllCourses() finally " + se.getMessage() + Colours.RESET);
+            }
+        }
     }
+
 
     @Override
     public Course getCourseByCAONumber(int caoNumber) throws DAOException {

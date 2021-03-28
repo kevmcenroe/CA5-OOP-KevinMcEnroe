@@ -156,17 +156,14 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             try
             {
                 if (rs != null)
-                {
                     rs.close();
-                }
+
                 if (ps != null)
-                {
                     ps.close();
-                }
+
                 if (con != null)
-                {
                     freeConnection(con);
-                }
+
             } catch (SQLException se)
             {
                 throw new DAOException(Colours.RED + "logInStudent() finally " + se.getMessage() + Colours.RESET);

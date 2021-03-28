@@ -35,6 +35,9 @@ public class App
 
         System.out.println("------------------");
         getCourseByCourseID(ICourseDAO, "DK001");
+
+        System.out.println("------------------");
+        getAllCourses(ICourseDAO);
     }
 
     private static void registerStudent(IStudentDAOInterface IStudentDAO, Student student)
@@ -86,7 +89,16 @@ public class App
         }
     }
 
-
+    private static void getAllCourses(ICourseDAOInterface ICourseDAO){
+        try
+        {
+            List<Course> course = ICourseDAO.getAllCourses();
+        }
+        catch(DAOException daoe)
+        {
+            System.out.println(daoe.getMessage());
+        }
+    }
 
     /*
     private static void getAllStudents(IStudentDAOInterface IStudentDAO)
