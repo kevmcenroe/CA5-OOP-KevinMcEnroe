@@ -1,3 +1,4 @@
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
 /* The server package should contain all code to run the server. The server uses TCP sockets and thread per client.

@@ -1,4 +1,5 @@
-package com.dkit.gd2.kevinmcenroe.exceptions;
+//Kevin McEnroe D00242092
+package com.dkit.gd2.kevinmcenroe.server;
 
 import java.sql.SQLException;
 

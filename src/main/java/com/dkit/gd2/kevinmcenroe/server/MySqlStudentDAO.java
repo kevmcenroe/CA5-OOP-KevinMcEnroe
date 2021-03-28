@@ -1,7 +1,8 @@
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
+import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Student;
-import com.dkit.gd2.kevinmcenroe.exceptions.DAOException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,58 +22,94 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
         String password = student.getPassword();
 
         Connection con = null;
-        PreparedStatement preparedStatement = null;
-        int result = 0;
-        List<Student> users = new ArrayList<>();
+        PreparedStatement ps = null;
 
         try
         {
             con = this.getConnection();
-            //insert into student(cao_number, date_of_birth, password) values(1, "2000-01-01", "password1");
-            String query = "insert into student(cao_number, date_of_birth, password) values(" + "\"" + caoNumber +  "\",\"" + dateOfBirth + "\",\"" + password + "\")";
-            preparedStatement = con.prepareStatement(query);
-            result = preparedStatement.executeUpdate();
-/*
-            while (resultSet.next())
-            {
-                int gotCaoNumber = resultSet.getInt("cao_number");
-                String gotDateOfBirth = resultSet.getString("date_of_birth");
-                String gotPassword = resultSet.getString("password");
 
-                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword);
-                users.add(readInUser);
-            }*/
-        } catch (SQLException se)
+            //String query = "insert into student(cao_number, date_of_birth, password) values(" + "\"" + caoNumber +  "\",\"" + dateOfBirth + "\",\"" + password + "\")";
+            String query = "insert into student(cao_number, date_of_birth, password) values(?, ?, ?)";
+            ps = con.prepareStatement(query);
+            ps.setString(1, Integer.toString(caoNumber));
+            ps.setString(2, dateOfBirth);
+            ps.setString(3, password);
+            ps.executeUpdate();
+            System.out.println(Colours.GREEN + "Student successfully registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
+        }
+        catch (SQLException se)
         {
-            throw new DAOException("registerStudent() " + se.getMessage());
-        } finally
+            throw new DAOException(Colours.RED + "registerStudent() - " + se.getMessage() + Colours.RESET);
+        }
+        finally
         {
             try
             {
-                if (preparedStatement != null)
-                {
-                    preparedStatement.close();
-                }
+                if (ps != null)
+                    ps.close();
+
                 if (con != null)
-                {
                     freeConnection(con);
-                }
-            } catch (SQLException se)
+            }
+            catch (SQLException se)
             {
-                throw new DAOException("findAllUsers() finally " + se.getMessage());
+                throw new DAOException(Colours.RED + "registerStudent() finally - " + se.getMessage() + Colours.RESET);
             }
         }
     }
 
+    @Override
+    public boolean isRegistered(Student student) throws DAOException
+    {
+        int caoNumber = student.getCaoNumber();
+        String dateOfBirth = student.getDayOfBirth();
+        String password = student.getPassword();
 
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
+        try
+        {
+            con = this.getConnection();
 
+            String query = "select * from student where cao_number = ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, Integer.toString(caoNumber));
 
+            rs = ps.executeQuery();
 
+            if (rs.next())
+            {
+                System.out.println("TEST - This student is already registered");
+                return true;
+            }
+            else
+            {
+                System.out.println("TEST - This student is not registered");
+                return false;
+            }
+        }
+        catch (SQLException se)
+        {
+            throw new DAOException(Colours.RED + "registerStudent() - " + se.getMessage() + Colours.RESET);
+        }
+        finally
+        {
+            try
+            {
+                if (ps != null)
+                    ps.close();
 
-
-
-
+                if (con != null)
+                    freeConnection(con);
+            }
+            catch (SQLException se)
+            {
+                throw new DAOException(Colours.RED + "registerStudent() finally - " + se.getMessage() + Colours.RESET);
+            }
+        }
+    }
 
 
     @Override

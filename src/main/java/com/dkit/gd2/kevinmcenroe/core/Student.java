@@ -1,4 +1,4 @@
-// Kevin McEnroe D00242092
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.core;
 
 import java.util.Objects;

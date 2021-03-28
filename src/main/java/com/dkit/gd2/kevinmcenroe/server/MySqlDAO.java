@@ -1,7 +1,7 @@
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.exceptions.DAOException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -39,7 +39,7 @@ public class MySqlDAO
             System.exit(2);
         }
 
-        System.out.println(Colours.GREEN + "Connected successfully" + Colours.RESET);
+        System.out.println(Colours.GREEN + "Connected successfully to the database" + Colours.RESET);
         return con;
     }
 
