@@ -30,6 +30,8 @@ public class CAOClient
     {
         boolean loop = true;
         int option;
+        MenuManager menuManager = new MenuManager();
+
         while(loop)
         {
             printMainMenu();
@@ -51,10 +53,10 @@ public class CAOClient
                         loop = false;
                         break; // exit the loop
                     case REGISTER:
-
+                        menuManager.displayRegisterStudent();
                         break;
                     case LOGIN:
-                        printLoggedInMenu();
+                        menuManager.displayLogInStudent();
                         break;
                 }
             }
