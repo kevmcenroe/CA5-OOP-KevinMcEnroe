@@ -22,15 +22,6 @@ public class CAOClient
     }
 
     private void start() {
-
-        // Loading of students initiated here
-        //com.dkit.gd2.kevinmcenroe.StudentManager studentManager = new com.dkit.gd2.kevinmcenroe.StudentManager();
-
-        // Loading of courses initiated here
-        //CourseManager courseManager = new CourseManager();
-
-        //com.dkit.gd2.kevinmcenroe.CourseChoicesManager courseChoicesManager = new com.dkit.gd2.kevinmcenroe.CourseChoicesManager(studentManager, courseManager);
-
         doMainMenuLoop();
     }
 
@@ -63,7 +54,7 @@ public class CAOClient
 
                         break;
                     case LOGIN:
-
+                        printLoggedInMenu();
                         break;
                 }
             }
@@ -78,6 +69,10 @@ public class CAOClient
             }
         }
         System.out.println("Thanks for using the app");
+    }
+
+    private void doLogInMenu(){
+
     }
 
     //Adapted from my CA4 submission
