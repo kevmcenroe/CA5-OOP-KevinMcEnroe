@@ -7,9 +7,15 @@ package com.dkit.gd2.kevinmcenroe.client;
 /* The CAOClient offers students a menu and sends messages to the server using TCP Sockets
  */
 
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
+import com.dkit.gd2.kevinmcenroe.core.Student;
 
 public class CAOClient
 {
@@ -37,32 +43,60 @@ public class CAOClient
             printMainMenu();
             try
             {
+                /*
+                Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
+
+                OutputStream out = dataSocket.getOutputStream();
+                PrintWriter output = new PrintWriter(new OutputStreamWriter(out));
+                InputStream in = dataSocket.getInputStream();
+                Scanner scannerInput = new Scanner(new InputStreamReader(in));
+                Scanner keyboard = new Scanner(System.in);
+
+
+                String message = "";
+*/
                 String input = keyboard.nextLine();
-                if(input.length() != 1)
-                    throw new IllegalArgumentException();
-                else
-                    option = Integer.parseInt(input);
 
-                if(option < 0 || option >= StartMenu.values().length)
-                    throw new IllegalArgumentException();
+                //while(!message.equals(CAOService.LOGOUT_COMMAND)) {
+                    if (input.length() != 1)
+                        throw new IllegalArgumentException();
+                    else
+                        option = Integer.parseInt(input);
 
-                StartMenu menuOption = StartMenu.values()[option];
-                switch (menuOption)
-                {
-                    case QUIT_APPLICATION:
-                        loop = false;
-                        break; // exit the loop
-                    case REGISTER:
-                        menuManager.displayRegisterStudent();
-                        break;
-                    case LOGIN:
-                        menuManager.displayLogInStudent();
-                        break;
-                }
+                    if (option < 0 || option >= StartMenu.values().length)
+                        throw new IllegalArgumentException();
+
+                    StartMenu menuOption = StartMenu.values()[option];
+                    String response = "";
+
+                    switch (menuOption) {
+                        case QUIT_APPLICATION:
+                            loop = false;
+                            break; // exit the loop
+                        case REGISTER:
+                            Student student = menuManager.displayRegisterStudent();
+
+                            /*
+                            message = CAOService.REGISTER_COMMAND;
+                            //send message
+                            output.println(message);
+                            output.flush();
+                            //listen for response
+                            response = scannerInput.nextLine();
+                            System.out.println("Register command: " + response);
+
+                             */
+                            break;
+
+                        case LOGIN:
+                            menuManager.displayLogInStudent();
+                            break;
+                    }
+                //}
             }
             catch(InputMismatchException ime)
             {
-                System.out.println("Please enter a valid option");
+                System.out.println(Colours.RED + "Please enter a valid option" + Colours.RESET);
                 keyboard.nextLine();
             }
             catch(IllegalArgumentException iae)

@@ -27,10 +27,43 @@ public class RegexChecker
         {
             return true;
         }
-        /* This check should take place elsewhere, as this class handles regex only
+        //TODO Link this to CAOClient to check if CAO Number is already registered
+        /*
         else if(isRegistered(Integer.parseInt(caoNumber))){
             System.out.println(Colours.RED + "A student of CAO Number " + caoNumber + " already exists" + Colours.RESET);
             return false;
         }*/
+    }
+
+    public boolean checkDateOfBirth(String dateOfBirth){
+        // This regex was adapted from https://stackoverflow.com/questions/2149680/regex-date-format-validation-on-java
+        String dateOfBirthPattern = "((18|19|20|21)\\d\\d)-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])";
+        Pattern pattern = Pattern.compile((dateOfBirthPattern));
+        Matcher matcher = pattern.matcher(dateOfBirth);
+
+        if(!matcher.matches()) {
+            System.out.println(Colours.RED + "Invalid Date of Birth" + Colours.RESET);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public boolean checkPassword(String password){
+        // This regex was adapted from https://stackoverflow.com/questions/2149680/regex-date-format-validation-on-java
+        String passwordPattern = "^.{8,}$";
+        Pattern pattern = Pattern.compile((passwordPattern));
+        Matcher matcher = pattern.matcher(password);
+
+        if(!matcher.matches()) {
+            System.out.println(Colours.RED + "Invalid Password" + Colours.RESET);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 }

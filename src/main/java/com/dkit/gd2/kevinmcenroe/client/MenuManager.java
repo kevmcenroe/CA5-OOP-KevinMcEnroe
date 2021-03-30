@@ -1,5 +1,7 @@
 package com.dkit.gd2.kevinmcenroe.client;
 
+import com.dkit.gd2.kevinmcenroe.core.Student;
+
 import java.util.Scanner;
 
 public class MenuManager {
@@ -10,21 +12,27 @@ public class MenuManager {
         System.out.print("Please enter " + request + " :>");
         RegexChecker regexChecker = new RegexChecker();
 
+        input = keyboard.nextLine();
         switch (inputType)
         {
             case CAO_NUMBER:
-                input = keyboard.nextLine();
                 while(!regexChecker.checkCAONumber(input)){
                     System.out.print("Please enter " + request + " :>");
                     input = keyboard.nextLine();
                 }
                 return input;
             case DATE_OF_BIRTH:
-
-                break;
+                while(!regexChecker.checkDateOfBirth(input)){
+                    System.out.print("Please enter " + request + " :>");
+                    input = keyboard.nextLine();
+                }
+                return input;
             case PASSWORD:
-
-                break;
+                while(!regexChecker.checkPassword(input)){
+                    System.out.print("Please enter " + request + " :>");
+                    input = keyboard.nextLine();
+                }
+                return input;
             case IDLE_COURSE_ID:
                 break;
             case CHOICE_COURSE_ID:
@@ -34,8 +42,13 @@ public class MenuManager {
     }
 
     //Student DAO Menus
-    public void displayRegisterStudent(){
-        String input = getInput("CAO Number", InputType.CAO_NUMBER);
+
+    public Student displayRegisterStudent(){
+        int caoNumber = Integer.parseInt(getInput("CAO Number", InputType.CAO_NUMBER));
+        String dateOfBirth = getInput("Date of Birth in YYYY-MM-DD format", InputType.DATE_OF_BIRTH);
+        String password = getInput("Password (Minimum 8 characters)", InputType.PASSWORD);
+
+        return new Student(caoNumber, dateOfBirth, password);
     }
 
     public void displayIsRegistered(){
@@ -47,6 +60,7 @@ public class MenuManager {
     }
 
     //Course DAO Menus
+
     public void displayGetCourseByID(){
 
     }
@@ -56,6 +70,7 @@ public class MenuManager {
     }
 
     // CourseChoice DAO Menus
+
     public void displayGetCourseChoicesByCAONumber(){
 
     }
