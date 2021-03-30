@@ -6,6 +6,6 @@ import com.dkit.gd2.kevinmcenroe.core.Course;
 import java.util.List;
 
 public interface ICourseChoiceDAOInterface {
-    public List<Course> getCourseChoicesByCAONumber(String caoNumber) throws DAOException;
-    public boolean updateCourseChoices(String caoNumber) throws DAOException;
+    public List<Course> getCourseChoicesByCAONumber(int caoNumber) throws DAOException;
+    public boolean updateCourseChoices(int caoNumber, List<String> newChoices) throws DAOException;
 }

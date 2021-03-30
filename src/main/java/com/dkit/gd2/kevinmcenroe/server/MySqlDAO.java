@@ -39,7 +39,7 @@ public class MySqlDAO
             System.exit(2);
         }
 
-        System.out.println(Colours.GREEN + "Connected successfully to the database" + Colours.RESET);
+        System.out.println(Colours.GREEN + "Successful database connection" + Colours.RESET);
         return con;
     }
 

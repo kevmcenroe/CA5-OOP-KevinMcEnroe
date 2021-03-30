@@ -13,7 +13,9 @@ import java.util.List;
 
 public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOInterface{
     @Override
-    public List<Course> getCourseChoicesByCAONumber(String caoNumber) throws DAOException {
+    public List<Course> getCourseChoicesByCAONumber(int caoNumber) throws DAOException {
+        //System.out.println("Getting course choices by CAO number [CAO Number: " + caoNumber + "]...");
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -25,7 +27,7 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
 
             String query = "select * from student_courses where cao_number = ?";
             ps = con.prepareStatement(query);
-            ps.setString(1, caoNumber);
+            ps.setString(1, Integer.toString(caoNumber));
 
             rs = ps.executeQuery();
 
@@ -33,12 +35,9 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
             {
                 while(rs.next()) {
                     String gotCourseID = rs.getString("courseid");
-                    String gotLevel = rs.getString("level");
-                    String gotTitle = rs.getString("title");
-                    String gotInstitution = rs.getString("institution");
 
-                    Course matchingCourse = new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
-                    System.out.println(Colours.GREEN + matchingCourse + Colours.RESET);
+                    MySqlCourseDAO courseDAO = new MySqlCourseDAO();
+                    Course matchingCourse = courseDAO.getCourseByID(gotCourseID);
                     courses.add(matchingCourse);
                 }
                 return courses;
@@ -73,8 +72,115 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
         }
     }
 
+
     @Override
-    public boolean updateCourseChoices(String caoNumber) throws DAOException {
-        return false;
+    public boolean updateCourseChoices(int caoNumber, List<String> newChoicesByID) throws DAOException {
+        //System.out.println("Updating course choices by CAO number [CAO Number: " + caoNumber + "]...");
+
+        try
+        {
+            MySqlStudentDAO studentDAO = new MySqlStudentDAO();
+            if(studentDAO.isRegistered(caoNumber)) {
+                clearChoicesByCAONumber(caoNumber);
+
+                MySqlCourseDAO courseDAO = new MySqlCourseDAO();
+                for (String courseID : newChoicesByID) {
+                    Course course = courseDAO.getCourseByID(courseID);
+                    if (course != null) {
+                        insertCourseChoiceByID(caoNumber, courseID);
+                    } else {
+                        System.out.println(Colours.RED + "Course choice discarded due to invalid courseID (CourseID: " + courseID + ")" + Colours.RESET);
+                    }
+                }
+
+                if (getCourseChoicesByCAONumber(caoNumber).equals(newChoicesByID)) {
+                    System.out.println(Colours.GREEN + "Course choices successfully recorded (CAO Number: " + caoNumber + ")" + Colours.RESET);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else
+            {
+                System.out.println(Colours.RED + "Student is not registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
+                return false;
+            }
+        }
+        catch (SQLException se)
+        {
+            throw new DAOException(Colours.RED + "updateCourseChoices() - " + se.getMessage() + Colours.RESET);
+        }
+    }
+
+    private void insertCourseChoiceByID(int caoNumber, String courseID) throws DAOException{
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try
+        {
+            con = this.getConnection();
+
+            String query = "insert into student_courses(cao_number, courseid) values(?, ?)";
+            ps = con.prepareStatement(query);
+            ps.setString(1, Integer.toString(caoNumber));
+            ps.setString(2, courseID);
+            ps.executeUpdate();
+        }
+        catch (SQLException se)
+        {
+            throw new DAOException(Colours.RED + "clearChoicesByCAONumber() - " + se.getMessage() + Colours.RESET);
+        }
+        finally
+        {
+            try
+            {
+                if (ps != null)
+                    ps.close();
+
+                if (con != null)
+                    freeConnection(con);
+            }
+            catch (SQLException se)
+            {
+                throw new DAOException(Colours.RED + "clearChoicesByCAONumber() finally - " + se.getMessage() + Colours.RESET);
+            }
+        }
+    }
+
+    private void clearChoicesByCAONumber(int caoNumber) throws DAOException{
+        System.out.println("Clearing existing course choices [CAO Number: " + caoNumber + "]...");
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try
+        {
+            con = this.getConnection();
+            String query = "delete from student_courses where cao_number = ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, Integer.toString(caoNumber));
+            ps.executeUpdate();
+
+        }
+        catch (SQLException se)
+        {
+            throw new DAOException(Colours.RED + "clearChoicesByCAONumber() - " + se.getMessage() + Colours.RESET);
+        }
+        finally
+        {
+            try
+            {
+                if (ps != null)
+                    ps.close();
+
+                if (con != null)
+                    freeConnection(con);
+            }
+            catch (SQLException se)
+            {
+                throw new DAOException(Colours.RED + "clearChoicesByCAONumber() finally - " + se.getMessage() + Colours.RESET);
+            }
+        }
     }
 }

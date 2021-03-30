@@ -6,6 +6,7 @@ import com.dkit.gd2.kevinmcenroe.core.Student;
 
 import com.dkit.gd2.kevinmcenroe.core.Course;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // Adapted from sample code
@@ -14,12 +15,13 @@ public class App
 {
     public static void main( String[] args )
     {
+
         System.out.println( "Database Access" );
         Student sampleStudent = new Student(105, "1999-01-01", "password100");
 
         //Student DAO Interaction
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
-        isRegistered(IStudentDAO, sampleStudent);
+        isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
         registerStudent(IStudentDAO, sampleStudent);
         logIn(IStudentDAO, sampleStudent);
 
@@ -30,7 +32,24 @@ public class App
 
         //CourseChoice DAO Interaction
         ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
-        getCourseChoicesByCAONumber(ICourseChoiceDAO,"1");
+        getCourseChoicesByCAONumber(ICourseChoiceDAO,1);
+
+        List<String> choices = new ArrayList<>();
+        choices.add("DK006");
+        choices.add("DK002");
+        choices.add("DK003");
+        choices.add("DK004");
+        choices.add("DK005");
+        updateCourseChoices(ICourseChoiceDAO, 105, choices);
+
+        Student sampleStudentB = new Student(109, "1999-01-01", "password100");
+        List<String> choicesB = new ArrayList<>();
+        choices.add("DK006");
+        choices.add("DK002");
+        choices.add("DK003");
+        choices.add("DK004");
+        choices.add("DK005");
+        updateCourseChoices(ICourseChoiceDAO, 109, choicesB);
     }
 
     private static void registerStudent(IStudentDAOInterface IStudentDAO, Student student)
@@ -48,12 +67,12 @@ public class App
         }
     }
 
-    private static void isRegistered(IStudentDAOInterface IStudentDAO, Student student)
+    private static void isRegistered(IStudentDAOInterface IStudentDAO, int caoNumber)
     {
         try
         {
-            System.out.println("\nVerifying if student is registered (CAO Number: " + student.getCaoNumber() + ")...");
-            IStudentDAO.isRegistered(student);
+            System.out.println("\nVerifying if student is registered (CAO Number: " + caoNumber + ")...");
+            IStudentDAO.isRegistered(caoNumber);
         }
         catch(DAOException daoe)
         {
@@ -98,10 +117,10 @@ public class App
         }
     }
 
-    private static void getCourseChoicesByCAONumber(ICourseChoiceDAOInterface ICourseChoiceDAO, String caoNumber){
+    private static void getCourseChoicesByCAONumber(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber){
         try
         {
-            System.out.println("\nFinding course choices by CAO number (CAO Number " + caoNumber +")...");
+            System.out.println("\nFinding course choices by CAO number (CAO Number: " + caoNumber +")...");
             List<Course> course = ICourseChoiceDAO.getCourseChoicesByCAONumber(caoNumber);
         }
         catch(DAOException daoe)
@@ -110,31 +129,15 @@ public class App
         }
     }
 
-    /*
-    private static void getAllStudents(IStudentDAOInterface IStudentDAO)
-    {
+    private static void updateCourseChoices(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber, List<String> newChoicesByID){
         try
         {
-            List<Student> students = IStudentDAO.findAllStudents();
-            printStudents(students);
+            System.out.println("\nUpdating course choices using course IDs (CAO Number " + caoNumber +")...");
+            boolean success = ICourseChoiceDAO.updateCourseChoices(caoNumber, newChoicesByID);
         }
         catch(DAOException daoe)
         {
             System.out.println(daoe.getMessage());
         }
     }
-
-    private static void printStudents(List<Student> students)
-    {
-        if(students == null || students.isEmpty())
-        {
-            System.out.println("There are no students");
-        }
-
-        for(Student student : students)
-        {
-            System.out.println(student);
-        }
-    }
-*/
 }

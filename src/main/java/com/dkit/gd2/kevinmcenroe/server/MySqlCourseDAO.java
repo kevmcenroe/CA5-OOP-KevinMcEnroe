@@ -14,6 +14,8 @@ import java.util.List;
 public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
     @Override
     public Course getCourseByID(String courseID) throws DAOException {
+        //System.out.println("Getting course using course ID [Course ID: " + courseID + "]...");
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -37,7 +39,6 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                 String gotInstitution = rs.getString("institution");
 
                 Course matchingCourse = new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
-                System.out.println(Colours.GREEN + matchingCourse + Colours.RESET);
                 return matchingCourse;
             }
             else
@@ -72,6 +73,7 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
 
     @Override
     public List<Course> getAllCourses() throws DAOException {
+        //System.out.println("Getting all courses...");
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -96,7 +98,7 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                     String gotInstitution = rs.getString("institution");
 
                     Course matchingCourse = new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
-                    System.out.println(Colours.GREEN + matchingCourse + Colours.RESET);
+                    //System.out.println(Colours.GREEN + matchingCourse + Colours.RESET);
                     courses.add(matchingCourse);
                 }
                 return courses;

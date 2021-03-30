@@ -13,8 +13,9 @@ import java.sql.SQLException;
 public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 {
     @Override
-    public boolean registerStudent(Student student) throws DAOException
-    {
+    public boolean registerStudent(Student student) throws DAOException {
+        //System.out.println("Registering student [CAO Number: " + student.getCaoNumber() + "]...");
+
         int caoNumber = student.getCaoNumber();
         String dateOfBirth = student.getDayOfBirth();
         String password = student.getPassword();
@@ -24,23 +25,27 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
         try
         {
-            con = this.getConnection();
+            if(!isRegistered(caoNumber)) {
+                con = this.getConnection();
 
-            //String query = "insert into student(cao_number, date_of_birth, password) values(" + "\"" + caoNumber +  "\",\"" + dateOfBirth + "\",\"" + password + "\")";
-            String query = "insert into student(cao_number, date_of_birth, password) values(?, ?, ?)";
-            ps = con.prepareStatement(query);
-            ps.setString(1, Integer.toString(caoNumber));
-            ps.setString(2, dateOfBirth);
-            ps.setString(3, password);
-            ps.executeUpdate();
+                //String query = "insert into student(cao_number, date_of_birth, password) values(" + "\"" + caoNumber +  "\",\"" + dateOfBirth + "\",\"" + password + "\")";
+                String query = "insert into student(cao_number, date_of_birth, password) values(?, ?, ?)";
+                ps = con.prepareStatement(query);
+                ps.setString(1, Integer.toString(caoNumber));
+                ps.setString(2, dateOfBirth);
+                ps.setString(3, password);
+                ps.executeUpdate();
 
-            if(isRegistered(new Student(caoNumber, dateOfBirth, password)))
-            {
-                System.out.println(Colours.GREEN + "Student successfully registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
-                return true;
+                if (isRegistered(caoNumber)) {
+                    //System.out.println(Colours.GREEN + "Student successfully registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
+                    return true;
+                } else {
+                    return false;
+                }
             }
             else
             {
+                System.out.println(Colours.RED + "Student is already registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
                 return false;
             }
         }
@@ -66,9 +71,8 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
     }
 
     @Override
-    public boolean isRegistered(Student student) throws DAOException
-    {
-        int caoNumber = student.getCaoNumber();
+    public boolean isRegistered(int caoNumber) throws DAOException {
+        //System.out.println("Confirming student registration [CAO Number: " + caoNumber + "]...");
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -86,7 +90,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
             if (rs.next())
             {
-                System.out.println(Colours.RED + "A student of CAO number " + caoNumber + " is already registered" + Colours.RESET);
                 return true;
             }
             else
@@ -116,6 +119,8 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
     @Override
     public boolean logInStudent(Student student) throws DAOException {
+        //System.out.println("Logging in student [CAO Number: " + student.getCaoNumber() + "]...");
+
         int caoNumber = student.getCaoNumber();
         String dateOfBirth = student.getDayOfBirth();
         String password = student.getPassword();
@@ -170,116 +175,5 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             }
         }
     }
-
-    /*
-    //Adapted from reference material
-    @Override
-    public List<Student> findAllStudents() throws DAOException
-    {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Student> users = new ArrayList<>();
-
-        try
-        {
-            con = this.getConnection();
-            String query = "select * from student";
-            ps = con.prepareStatement(query);
-            rs = ps.executeQuery();
-
-            while (rs.next())
-            {
-                int gotCaoNumber = rs.getInt("cao_number");
-                String gotDateOfBirth = rs.getString("date_of_birth");
-                String gotPassword = rs.getString("password");
-
-                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword);
-                users.add(readInUser);
-            }
-        } catch (SQLException se)
-        {
-            throw new DAOException("findAllUsers() " + se.getMessage());
-        } finally
-        {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (ps != null)
-                {
-                    ps.close();
-                }
-                if (con != null)
-                {
-                    freeConnection(con);
-                }
-            } catch (SQLException se)
-            {
-                throw new DAOException("findAllUsers() finally " + se.getMessage());
-            }
-        }
-        return users;
-    }
-
-    //Adapted from reference material
-    @Override
-    public Student findStudentByCAONumberPassword(String caoNumber, String password) throws DAOException
-    {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Student returnedUser = null;
-
-        try
-        {
-            con = this.getConnection();
-
-            String query = "select * from student where cao_number = ? and password = ?";
-            ps = con.prepareStatement(query);
-            ps.setString(1, caoNumber);
-            ps.setString(2, password);
-
-            rs = ps.executeQuery();
-
-            if (rs.next())
-            {
-                int gotCaoNumber = rs.getInt("cao_number");
-                String gotDateOfBirth = rs.getString("date_of_birth");
-                String gotPassword = rs.getString("password");
-
-                Student readInUser = new Student(gotCaoNumber, gotDateOfBirth, gotPassword);
-            }
-        }
-        catch (SQLException se)
-        {
-            throw new DAOException("findAllUsers() " + se.getMessage());
-        }
-        finally
-        {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (ps != null)
-                {
-                    ps.close();
-                }
-                if (con != null)
-                {
-                    freeConnection(con);
-                }
-            } catch (SQLException se)
-            {
-                throw new DAOException("findAllUsers() finally " + se.getMessage());
-            }
-        }
-        return returnedUser;
-    }
-    */
 }
 
