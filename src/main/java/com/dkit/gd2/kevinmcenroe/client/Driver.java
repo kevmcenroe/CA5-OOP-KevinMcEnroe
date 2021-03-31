@@ -11,7 +11,7 @@ import java.util.List;
 
 // Adapted from sample code
 // Database driver application
-public class App 
+public class Driver
 {
     public static void main( String[] args )
     {

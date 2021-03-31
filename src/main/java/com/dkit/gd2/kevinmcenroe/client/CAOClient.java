@@ -43,7 +43,7 @@ public class CAOClient
             printMainMenu();
             try
             {
-                /*
+
                 Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
 
                 OutputStream out = dataSocket.getOutputStream();
@@ -52,12 +52,11 @@ public class CAOClient
                 Scanner scannerInput = new Scanner(new InputStreamReader(in));
                 Scanner keyboard = new Scanner(System.in);
 
-
                 String message = "";
-*/
+
                 String input = keyboard.nextLine();
 
-                //while(!message.equals(CAOService.LOGOUT_COMMAND)) {
+                while(!message.equals(CAOService.LOGOUT_COMMAND)) {
                     if (input.length() != 1)
                         throw new IllegalArgumentException();
                     else
@@ -76,23 +75,22 @@ public class CAOClient
                         case REGISTER:
                             Student student = menuManager.displayRegisterStudent();
 
-                            /*
-                            message = CAOService.REGISTER_COMMAND;
+                            //TODO Figure out to what extent I need to do this for the first CA
+                            //  Can I just go className.MethodName in this case?
+
+                            message = generateRegister(student);
                             //send message
                             output.println(message);
                             output.flush();
                             //listen for response
                             response = scannerInput.nextLine();
-                            System.out.println("Register command: " + response);
-
-                             */
+                            System.out.println("Response: " + response);
                             break;
-
                         case LOGIN:
                             menuManager.displayLogInStudent();
                             break;
                     }
-                //}
+                }
             }
             catch(InputMismatchException ime)
             {
@@ -102,11 +100,34 @@ public class CAOClient
             catch(IllegalArgumentException iae)
             {
                 System.out.println(Colours.RED + "Please enter a valid option" + Colours.RESET);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         System.out.println("Thanks for using the app");
     }
 
+    private String generateRegister(Student student){
+        StringBuffer message = new StringBuffer(CAOService.REGISTER_COMMAND);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        String caoNumber = Integer.toString(student.getCaoNumber());
+        String dateOfBirth = student.getDayOfBirth();
+        String password = student.getPassword();
+
+        message.append(caoNumber);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        message.append(dateOfBirth);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        message.append(password);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        return message.toString();
+    }
     private void doLogInMenu(){
 
     }
