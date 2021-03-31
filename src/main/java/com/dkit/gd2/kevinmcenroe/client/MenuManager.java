@@ -43,7 +43,7 @@ public class MenuManager {
 
     //Student DAO Menus
 
-    public Student displayRegisterStudent(){
+    public Student displayRegisterStudentMenu(){
         int caoNumber = Integer.parseInt(getInput("CAO Number", InputType.CAO_NUMBER));
         String dateOfBirth = getInput("Date of Birth in YYYY-MM-DD format", InputType.DATE_OF_BIRTH);
         String password = getInput("Password (Minimum 8 characters)", InputType.PASSWORD);

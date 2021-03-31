@@ -8,7 +8,6 @@ package com.dkit.gd2.kevinmcenroe.client;
  */
 
 import java.io.*;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -43,7 +42,7 @@ public class CAOClient
             printMainMenu();
             try
             {
-
+                /* This code will be revisited in Deliverable 2
                 Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
 
                 OutputStream out = dataSocket.getOutputStream();
@@ -51,9 +50,11 @@ public class CAOClient
                 InputStream in = dataSocket.getInputStream();
                 Scanner scannerInput = new Scanner(new InputStreamReader(in));
                 Scanner keyboard = new Scanner(System.in);
+                */
 
+                DAODriver daoDriver = new DAODriver();
+                
                 String message = "";
-
                 String input = keyboard.nextLine();
 
                 while(!message.equals(CAOService.LOGOUT_COMMAND)) {
@@ -64,23 +65,23 @@ public class CAOClient
 
                     if (option < 0 || option >= StartMenu.values().length)
                         throw new IllegalArgumentException();
+                    //String response = "";
 
                     StartMenu menuOption = StartMenu.values()[option];
-                    String response = "";
-
                     switch (menuOption) {
                         case QUIT_APPLICATION:
                             loop = false;
                             break; // Exit the loop
                         case REGISTER:
-                            Student student = menuManager.displayRegisterStudent();
+                            Student student = menuManager.displayRegisterStudentMenu();
+                            message = generateRegisterRequest(student);
+                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                            //TODO Figure out to what extent I need to do this for the first CA
-                            //  Can I just go className.MethodName in this case or is it advisable to set up the server now if I can
-                            //  How do I avoid the errors that come with not implementing the server side of the protocol
+                            daoDriver.registerStudent(student);
 
-                            message = generateRegister(student);
-
+                            doMainMenuLoop();
+                            break;
+                            /* This code will be revisited in Deliverable 2
                             //Send message
                             output.println(message);
                             output.flush();
@@ -89,8 +90,7 @@ public class CAOClient
                             response = scannerInput.nextLine();
                             System.out.println("Sent: " + message);
                             System.out.println("Response: " + response);
-                            doMainMenuLoop();
-                            break;
+                            */
                         case LOGIN:
                             menuManager.displayLogInStudent();
                             break;
@@ -105,16 +105,12 @@ public class CAOClient
             catch(IllegalArgumentException iae)
             {
                 System.out.println(Colours.RED + "Please enter a valid option" + Colours.RESET);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
         System.out.println("Thanks for using the app");
     }
 
-    private String generateRegister(Student student){
+    private String generateRegisterRequest(Student student){
         StringBuffer message = new StringBuffer(CAOService.REGISTER_COMMAND);
         message.append(CAOService.BREAKING_CHARACTER);
 
@@ -133,6 +129,31 @@ public class CAOClient
 
         return message.toString();
     }
+
+    /*Potential refactoring
+    message = generateRequest(StartMenu.REGISTER, student);
+    private String generateRequest(StartMenu option, Student student){
+        switch (option) {
+            case REGISTER:
+                StringBuffer message = new StringBuffer(CAOService.REGISTER_COMMAND);
+                message.append(CAOService.BREAKING_CHARACTER);
+
+                String caoNumber = Integer.toString(student.getCaoNumber());
+                String dateOfBirth = student.getDayOfBirth();
+                String password = student.getPassword();
+
+                message.append(caoNumber);
+                message.append(CAOService.BREAKING_CHARACTER);
+                message.append(dateOfBirth);
+                message.append(CAOService.BREAKING_CHARACTER);
+                message.append(password);
+                message.append(CAOService.BREAKING_CHARACTER);
+
+                return message.toString();
+        }
+    }
+ */
+
     private void doLogInMenu(){
 
     }

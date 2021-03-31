@@ -11,19 +11,19 @@ import java.util.List;
 
 // Adapted from sample code
 // Database driver application
-public class Driver
+public class DAODriver
 {
-    public static void main( String[] args )
+    public void main( String[] args )
     {
 
         System.out.println( "Database Access" );
         Student sampleStudent = new Student(105, "1999-01-01", "password100");
 
         //Student DAO Interaction
-        IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
-        isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
-        registerStudent(IStudentDAO, sampleStudent);
-        logIn(IStudentDAO, sampleStudent);
+
+        //isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
+        //registerStudent(IStudentDAO, sampleStudent);
+        //logIn(IStudentDAO, sampleStudent);
 
         //Course DAO Interaction
         ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
@@ -52,10 +52,9 @@ public class Driver
         updateCourseChoices(ICourseChoiceDAO, 109, choicesB);
     }
 
-    private static void registerStudent(IStudentDAOInterface IStudentDAO, Student student)
+    public void registerStudent(Student student)
     {
-        //TODO Check if student is valid or already exits
-        //TODO Employ RegexChecker on input elsewhere
+        IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
         try
         {
             System.out.println("\nRegistering student (CAO Number " + student.getCaoNumber() +")...");
@@ -67,7 +66,7 @@ public class Driver
         }
     }
 
-    private static void isRegistered(IStudentDAOInterface IStudentDAO, int caoNumber)
+    public static void isRegistered(IStudentDAOInterface IStudentDAO, int caoNumber)
     {
         try
         {
@@ -80,7 +79,7 @@ public class Driver
         }
     }
 
-    private static void logIn(IStudentDAOInterface IStudentDAO, Student student)
+    public static void logIn(IStudentDAOInterface IStudentDAO, Student student)
     {
         try
         {
@@ -93,7 +92,7 @@ public class Driver
         }
     }
 
-    private static void getCourseByCourseID(ICourseDAOInterface ICourseDAO, String courseID){
+    public static void getCourseByCourseID(ICourseDAOInterface ICourseDAO, String courseID){
         try
         {
             System.out.println("\nFinding course by courseID (CourseID: " + courseID + ")...");
@@ -105,7 +104,7 @@ public class Driver
         }
     }
 
-    private static void getAllCourses(ICourseDAOInterface ICourseDAO){
+    public static void getAllCourses(ICourseDAOInterface ICourseDAO){
         try
         {
             System.out.println("\nGetting all courses...");
@@ -117,7 +116,7 @@ public class Driver
         }
     }
 
-    private static void getCourseChoicesByCAONumber(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber){
+    public static void getCourseChoicesByCAONumber(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber){
         try
         {
             System.out.println("\nFinding course choices by CAO number (CAO Number: " + caoNumber +")...");
@@ -129,7 +128,7 @@ public class Driver
         }
     }
 
-    private static void updateCourseChoices(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber, List<String> newChoicesByID){
+    public static void updateCourseChoices(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber, List<String> newChoicesByID){
         try
         {
             System.out.println("\nUpdating course choices using course IDs (CAO Number " + caoNumber +")...");
