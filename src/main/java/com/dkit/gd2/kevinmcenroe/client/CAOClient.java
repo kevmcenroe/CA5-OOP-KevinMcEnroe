@@ -71,20 +71,25 @@ public class CAOClient
                     switch (menuOption) {
                         case QUIT_APPLICATION:
                             loop = false;
-                            break; // exit the loop
+                            break; // Exit the loop
                         case REGISTER:
                             Student student = menuManager.displayRegisterStudent();
 
                             //TODO Figure out to what extent I need to do this for the first CA
-                            //  Can I just go className.MethodName in this case?
+                            //  Can I just go className.MethodName in this case or is it advisable to set up the server now if I can
+                            //  How do I avoid the errors that come with not implementing the server side of the protocol
 
                             message = generateRegister(student);
-                            //send message
+
+                            //Send message
                             output.println(message);
                             output.flush();
-                            //listen for response
+
+                            //Listen for response
                             response = scannerInput.nextLine();
+                            System.out.println("Sent: " + message);
                             System.out.println("Response: " + response);
+                            doMainMenuLoop();
                             break;
                         case LOGIN:
                             menuManager.displayLogInStudent();

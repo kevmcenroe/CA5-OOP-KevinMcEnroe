@@ -7,6 +7,7 @@ package com.dkit.gd2.kevinmcenroe.server;
  */
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
+import com.dkit.gd2.kevinmcenroe.core.Student;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -52,11 +53,56 @@ public class CAOServer {
                     System.out.println("Received message: " + incomingMessage);
 
                     String[] messageComponents = incomingMessage.split(CAOService.BREAKING_CHARACTER);
-                    //echo%%Hello World, echo%%Hello%%World
-                    //0%%1                  0%%1%%2
+                    //REGISTER%%$caoNumber%%$dateOfBirth%%$password
+                    //REGISTERED if successful or REG FAILED if unsuccessful
                     if (messageComponents[0].equals(CAOService.REGISTER_COMMAND))
                     {
                         StringBuffer echoMessage = new StringBuffer("");
+                        MySqlStudentDAO studentDAO = new MySqlStudentDAO();
+
+                        int caoNumber = Integer.parseInt(messageComponents[1]);
+                        String dateOfBirth = messageComponents[2];
+                        String password = messageComponents[3];
+
+                        Student student = new Student(caoNumber, dateOfBirth, password);
+
+                        try{
+                            if(studentDAO.isRegistered(student.getCaoNumber())) {
+                                //Student of that CAO number already exists
+                                echoMessage.append("REG FAILED");
+                            }
+                            else
+                            {
+                                studentDAO.registerStudent(student);
+                            }
+                        }
+                        catch (DAOException throwables)
+                        {
+                            throwables.printStackTrace();
+                        }
+                        finally
+                        {
+                            if(studentDAO.isRegistered(student.getCaoNumber()))
+                            {
+                                echoMessage.append("REGISTERED");
+                            }
+                            else
+                            {
+                                echoMessage.append("REG FAILED");
+                            }
+                        }
+
+                        response = echoMessage.toString();
+                    }
+
+                    /*
+                    if (messageComponents[0].equals(CAOService.REGISTER_COMMAND))
+                    {
+                        StringBuffer echoMessage = new StringBuffer("");
+
+                        echoMessage.append(CAOService.REGISTER_COMMAND);
+                        echoMessage.append(CAOService.BREAKING_CHARACTER);
+
                         if (messageComponents.length > 1) {
                             echoMessage.append(messageComponents[1]);
                         }
@@ -65,7 +111,6 @@ public class CAOServer {
                             echoMessage.append(messageComponents[i]);
                         }
                         response = echoMessage.toString();
-                        //response = "YES";
                     }
                     /*else if (messageComponents[0].equals(CAOService.DAYTIME))
                     {
@@ -92,7 +137,7 @@ public class CAOServer {
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | DAOException e) {
             System.out.println("Shutting down. I think we need threads");
             System.exit(1);
         }
