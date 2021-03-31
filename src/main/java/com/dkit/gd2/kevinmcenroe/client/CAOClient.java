@@ -7,8 +7,6 @@ package com.dkit.gd2.kevinmcenroe.client;
 /* The CAOClient offers students a menu and sends messages to the server using TCP Sockets
  */
 
-import java.io.*;
-import java.net.UnknownHostException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -39,7 +37,7 @@ public class CAOClient
 
         while(loop)
         {
-            printMainMenu();
+            MenuManager.displayMainMenu();
             try
             {
                 /* This code will be revisited in Deliverable 2
@@ -53,7 +51,7 @@ public class CAOClient
                 */
 
                 DAODriver daoDriver = new DAODriver();
-                
+
                 String message = "";
                 String input = keyboard.nextLine();
 
@@ -73,11 +71,11 @@ public class CAOClient
                             loop = false;
                             break; // Exit the loop
                         case REGISTER:
-                            Student student = menuManager.displayRegisterStudentMenu();
-                            message = generateRegisterRequest(student);
+                            Student studentToRegister = menuManager.displayStudentMenu();
+                            message = generateRegisterRequest(studentToRegister);
                             System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                            daoDriver.registerStudent(student);
+                            daoDriver.registerStudent(studentToRegister);
 
                             doMainMenuLoop();
                             break;
@@ -92,7 +90,19 @@ public class CAOClient
                             System.out.println("Response: " + response);
                             */
                         case LOGIN:
-                            menuManager.displayLogInStudent();
+                            Student studentToLogIn = menuManager.displayStudentMenu();
+                            message = generateLogInRequest(studentToLogIn);
+                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+
+                            if(daoDriver.logIn(studentToLogIn))
+                            {
+                                //Successful log in
+                                doLoggedInMenuLoop();
+                            }
+                            else
+                            {
+                                doMainMenuLoop();
+                            }
                             break;
                     }
                 }
@@ -111,7 +121,7 @@ public class CAOClient
     }
 
     private String generateRegisterRequest(Student student){
-        StringBuffer message = new StringBuffer(CAOService.REGISTER_COMMAND);
+        StringBuilder message = new StringBuilder(CAOService.REGISTER_COMMAND);
         message.append(CAOService.BREAKING_CHARACTER);
 
         String caoNumber = Integer.toString(student.getCaoNumber());
@@ -130,44 +140,24 @@ public class CAOClient
         return message.toString();
     }
 
-    /*Potential refactoring
-    message = generateRequest(StartMenu.REGISTER, student);
-    private String generateRequest(StartMenu option, Student student){
-        switch (option) {
-            case REGISTER:
-                StringBuffer message = new StringBuffer(CAOService.REGISTER_COMMAND);
-                message.append(CAOService.BREAKING_CHARACTER);
+    private String generateLogInRequest(Student student){
+        StringBuilder message = new StringBuilder(CAOService.LOGIN_COMMAND);
+        message.append(CAOService.BREAKING_CHARACTER);
 
-                String caoNumber = Integer.toString(student.getCaoNumber());
-                String dateOfBirth = student.getDayOfBirth();
-                String password = student.getPassword();
+        String caoNumber = Integer.toString(student.getCaoNumber());
+        String dateOfBirth = student.getDayOfBirth();
+        String password = student.getPassword();
 
-                message.append(caoNumber);
-                message.append(CAOService.BREAKING_CHARACTER);
-                message.append(dateOfBirth);
-                message.append(CAOService.BREAKING_CHARACTER);
-                message.append(password);
-                message.append(CAOService.BREAKING_CHARACTER);
+        message.append(caoNumber);
+        message.append(CAOService.BREAKING_CHARACTER);
 
-                return message.toString();
-        }
-    }
- */
+        message.append(dateOfBirth);
+        message.append(CAOService.BREAKING_CHARACTER);
 
-    private void doLogInMenu(){
+        message.append(password);
+        message.append(CAOService.BREAKING_CHARACTER);
 
-    }
-
-    //Adapted from my CA4 submission
-    private void printMainMenu()
-    {
-        System.out.println("\nMenu Options:");
-        for(int i=0; i < StartMenu.values().length; i++)
-        {
-            String menuOption = StartMenu.values()[i].toString().replaceAll("_", " ");
-            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
-        }
-        System.out.println("Enter the corresponding number to select an option");
+        return message.toString();
     }
 
     private void doLoggedInMenuLoop()
@@ -176,7 +166,7 @@ public class CAOClient
         int option;
         while(loop)
         {
-            printLoggedInMenu();
+            MenuManager.displayLoggedInMenu();
             try
             {
                 String input = keyboard.nextLine();
@@ -220,21 +210,5 @@ public class CAOClient
             }
         }
         System.out.println("Thanks for using the student menu");
-    }
-
-    //Adapted from my CA3 submission
-    private void printLoggedInMenu()
-    {
-        System.out.println("\nMenu Options:");
-        for(int i = 0; i < LoggedInMenu.values().length; i++)
-        {
-            String menuOption = LoggedInMenu.values()[i].toString().replaceAll("_", " ");
-            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
-        }
-        System.out.println("Enter the corresponding number to select an option");
-    }
-
-    private void requestInput(){
-
     }
 }

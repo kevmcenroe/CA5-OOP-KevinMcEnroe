@@ -79,16 +79,18 @@ public class DAODriver
         }
     }
 
-    public static void logIn(IStudentDAOInterface IStudentDAO, Student student)
+    public boolean logIn(Student student)
     {
+        IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
         try
         {
             System.out.println("\nLogging in student (CAO Number: " + student.getCaoNumber() + ")...");
-            IStudentDAO.logInStudent(student);
+            return IStudentDAO.logInStudent(student);
         }
         catch(DAOException daoe)
         {
             System.out.println(daoe.getMessage());
+            return false;
         }
     }
 

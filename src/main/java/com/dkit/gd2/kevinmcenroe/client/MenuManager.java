@@ -1,5 +1,6 @@
 package com.dkit.gd2.kevinmcenroe.client;
 
+import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Student;
 
 import java.util.Scanner;
@@ -41,9 +42,33 @@ public class MenuManager {
         return null;
     }
 
+    //Adapted from my CA4 submission
+    public static void displayMainMenu()
+    {
+        System.out.println("\nMenu Options:");
+        for(int i=0; i < StartMenu.values().length; i++)
+        {
+            String menuOption = StartMenu.values()[i].toString().replaceAll("_", " ");
+            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
+        }
+        System.out.println("Enter the corresponding number to select an option");
+    }
+
+    //Adapted from my CA4 submission
+    public static void displayLoggedInMenu()
+    {
+        System.out.println("\nMenu Options:");
+        for(int i = 0; i < LoggedInMenu.values().length; i++)
+        {
+            String menuOption = LoggedInMenu.values()[i].toString().replaceAll("_", " ");
+            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
+        }
+        System.out.println("Enter the corresponding number to select an option");
+    }
+
     //Student DAO Menus
 
-    public Student displayRegisterStudentMenu(){
+    public Student displayStudentMenu(){
         int caoNumber = Integer.parseInt(getInput("CAO Number", InputType.CAO_NUMBER));
         String dateOfBirth = getInput("Date of Birth in YYYY-MM-DD format", InputType.DATE_OF_BIRTH);
         String password = getInput("Password (Minimum 8 characters)", InputType.PASSWORD);
@@ -52,10 +77,6 @@ public class MenuManager {
     }
 
     public void displayIsRegistered(){
-
-    }
-
-    public void displayLogInStudent(){
 
     }
 
