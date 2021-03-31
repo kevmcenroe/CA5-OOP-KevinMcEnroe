@@ -7,6 +7,7 @@ package com.dkit.gd2.kevinmcenroe.server;
  */
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
+import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Student;
 
 import java.io.*;
@@ -69,29 +70,27 @@ public class CAOServer {
                         try{
                             if(studentDAO.isRegistered(student.getCaoNumber())) {
                                 //Student of that CAO number already exists
-                                echoMessage.append("REG FAILED");
+                                echoMessage.append(Colours.RED + "REG FAILED");
                             }
                             else
                             {
                                 studentDAO.registerStudent(student);
+                                if(studentDAO.isRegistered(student.getCaoNumber()))
+                                {
+                                    echoMessage.append(Colours.GREEN + "REGISTERED");
+                                }
+                                else
+                                {
+                                    echoMessage.append(Colours.RED + "REG FAILED");
+                                }
                             }
                         }
                         catch (DAOException throwables)
                         {
                             throwables.printStackTrace();
                         }
-                        finally
-                        {
-                            if(studentDAO.isRegistered(student.getCaoNumber()))
-                            {
-                                echoMessage.append("REGISTERED");
-                            }
-                            else
-                            {
-                                echoMessage.append("REG FAILED");
-                            }
-                        }
 
+                        echoMessage.append(Colours.RESET);
                         response = echoMessage.toString();
                     }
 
@@ -118,7 +117,6 @@ public class CAOServer {
                     }
                     else if (messageComponents[0].equals(CAOService.STATS))
                     {
-                        //TODO Home work
                         response = "This has not been implemented yet. This is for homework";
                     }
                     else if (messageComponents[0].equals(CAOService.END_SESSION))
@@ -137,7 +135,7 @@ public class CAOServer {
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
-        } catch (NoSuchElementException | DAOException e) {
+        } catch (NoSuchElementException e) {
             System.out.println("Shutting down. I think we need threads");
             System.exit(1);
         }
