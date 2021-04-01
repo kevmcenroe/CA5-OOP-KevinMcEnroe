@@ -7,6 +7,7 @@ package com.dkit.gd2.kevinmcenroe.client;
 /* The CAOClient offers students a menu and sends messages to the server using TCP Sockets
  */
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -161,9 +162,18 @@ public class CAOClient
                         message = generateCurrentChoicesRequest(loggedInCAONumber);
                         System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
+                        List<String> allChoices = daoDriver.getCourseChoices(loggedInCAONumber);
+                        menuManager.displayCurrentChoices(loggedInCAONumber);
                         break;
-                    case UPDATE_ALL_COURSES:
-                        loop = false;
+                    case UPDATE_CURRENT_CHOICES:
+                        List<String> newChoices = menuManager.displayUpdateCourseChoicesMenu(loggedInCAONumber);
+
+                        if(newChoices != null) {
+                            message = generateUpdateChoicesRequest(loggedInCAONumber, newChoices);
+                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+                            daoDriver.updateCourseChoices(loggedInCAONumber, newChoices);
+                        }
+
                         break; // Exit the loop
                 }
             }
@@ -245,8 +255,17 @@ public class CAOClient
         return message.toString();
     }
 
-    private String generateUpdateChoicesRequest(){
+    private String generateUpdateChoicesRequest(int caoNumber, List<String> newChoices){
         StringBuilder message = new StringBuilder(CAOService.UPDATE_CHOICES_COMMAND);
+        message.append(CAOService.BREAKING_CHARACTER);
+        message.append(caoNumber);
+
+        if(newChoices != null)
+            for(String choice : newChoices){
+                message.append(CAOService.BREAKING_CHARACTER);
+                message.append(choice);
+            }
+
         return message.toString();
     }
 

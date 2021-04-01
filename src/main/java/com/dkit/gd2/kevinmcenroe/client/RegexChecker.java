@@ -71,9 +71,15 @@ public class RegexChecker
         String courseIDPattern = "^[a-zA-Z0-9]*$";
         Pattern pattern = Pattern.compile((courseIDPattern));
         Matcher matcher = pattern.matcher(courseID);
+        DAODriver daoDriver = new DAODriver();
 
         if(!matcher.matches()) {
             System.out.println(Colours.RED + "Invalid CourseID" + Colours.RESET);
+            return false;
+        }
+        else if(daoDriver.getCourseByCourseID(courseID) == null)
+        {
+            System.out.println(Colours.RED + "A course of ID \"" + courseID + "\" does not exist" + Colours.RESET);
             return false;
         }
         else

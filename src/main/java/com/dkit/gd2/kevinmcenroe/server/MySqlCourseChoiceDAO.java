@@ -13,13 +13,13 @@ import java.util.List;
 
 public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOInterface{
     @Override
-    public List<Course> getCourseChoicesByCAONumber(int caoNumber) throws DAOException {
+    public List<String> getCourseChoicesByCAONumber(int caoNumber) throws DAOException {
         //System.out.println("Getting course choices by CAO number [CAO Number: " + caoNumber + "]...");
 
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Course> courses = new ArrayList<>();
+        List<String> courses = new ArrayList<>();
 
         try
         {
@@ -36,9 +36,11 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
                 while(rs.next()) {
                     String gotCourseID = rs.getString("courseid");
 
-                    MySqlCourseDAO courseDAO = new MySqlCourseDAO();
-                    Course matchingCourse = courseDAO.getCourseByID(gotCourseID);
-                    courses.add(matchingCourse);
+                    //MySqlCourseDAO courseDAO = new MySqlCourseDAO();
+                    //Course matchingCourse = courseDAO.getCourseByID(gotCourseID);
+                    //courses.add(matchingCourse);
+
+                    courses.add(gotCourseID);
                 }
                 return courses;
             }
@@ -80,10 +82,11 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
         try
         {
             MySqlStudentDAO studentDAO = new MySqlStudentDAO();
+            MySqlCourseDAO courseDAO = new MySqlCourseDAO();
+
             if(studentDAO.isRegistered(caoNumber)) {
                 clearChoicesByCAONumber(caoNumber);
 
-                MySqlCourseDAO courseDAO = new MySqlCourseDAO();
                 for (String courseID : newChoicesByID) {
                     Course course = courseDAO.getCourseByID(courseID);
                     if (course != null) {
@@ -93,12 +96,19 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
                     }
                 }
 
-                if (getCourseChoicesByCAONumber(caoNumber).equals(newChoicesByID)) {
-                    System.out.println(Colours.GREEN + "Course choices successfully recorded (CAO Number: " + caoNumber + ")" + Colours.RESET);
-                    return true;
-                } else {
-                    return false;
+                List<String> recordedChoices = getCourseChoicesByCAONumber(caoNumber);
+                for(int i=0; i<recordedChoices.size(); i++){
+                    if(recordedChoices.get(i).equals(newChoicesByID.get(i)))
+                    {
+                        System.out.println(Colours.GREEN + newChoicesByID.get(i) + " successfully inserted" + Colours.RESET);
+                    }
+                    else
+                    {
+                        System.out.println(Colours.RED + "Unsuccessful insert" + Colours.RESET);
+                        return false;
+                    }
                 }
+                return true;
             }
             else
             {
@@ -121,6 +131,7 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
         {
             con = this.getConnection();
 
+            System.out.println("Inserting course choice [CAO Number: " + caoNumber + ", Course ID: " + courseID + "]...");
             String query = "insert into student_courses(cao_number, courseid) values(?, ?)";
             ps = con.prepareStatement(query);
             ps.setString(1, Integer.toString(caoNumber));
@@ -129,7 +140,7 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
         }
         catch (SQLException se)
         {
-            throw new DAOException(Colours.RED + "clearChoicesByCAONumber() - " + se.getMessage() + Colours.RESET);
+            throw new DAOException(Colours.RED + "insertCourseChoiceByID() - " + se.getMessage() + Colours.RESET);
         }
         finally
         {
@@ -143,7 +154,7 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
             }
             catch (SQLException se)
             {
-                throw new DAOException(Colours.RED + "clearChoicesByCAONumber() finally - " + se.getMessage() + Colours.RESET);
+                throw new DAOException(Colours.RED + "insertCourseChoiceByID() finally - " + se.getMessage() + Colours.RESET);
             }
         }
     }

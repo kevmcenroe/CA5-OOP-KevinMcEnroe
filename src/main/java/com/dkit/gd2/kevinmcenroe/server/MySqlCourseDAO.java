@@ -43,7 +43,7 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
             }
             else
             {
-                System.out.println(Colours.RED + "A course of courseID " + courseID + " does not exist" + Colours.RESET);
+                // Course of that ID doesn't exist
                 return null;
             }
         }

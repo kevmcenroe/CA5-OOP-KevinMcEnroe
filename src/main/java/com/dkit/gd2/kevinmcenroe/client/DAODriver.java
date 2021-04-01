@@ -1,6 +1,7 @@
 //Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.client;
 
+import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.server.*;
 import com.dkit.gd2.kevinmcenroe.core.Student;
 
@@ -18,17 +19,17 @@ public class DAODriver
 
         System.out.println( "Database Access" );
         Student sampleStudent = new Student(105, "1999-01-01", "password100");
+/*
+        Student DAO Interaction
 
-        //Student DAO Interaction
+        isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
+        registerStudent(IStudentDAO, sampleStudent);
+        logIn(IStudentDAO, sampleStudent);
 
-        //isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
-        //registerStudent(IStudentDAO, sampleStudent);
-        //logIn(IStudentDAO, sampleStudent);
-
-        //Course DAO Interaction
-        //ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
-        //getCourseByCourseID(ICourseDAO, "DK001");
-        //getAllCourses(ICourseDAO);
+        Course DAO Interaction
+        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
+        getCourseByCourseID(ICourseDAO, "DK001");
+        getAllCourses(ICourseDAO);
 
         //CourseChoice DAO Interaction
         ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
@@ -50,6 +51,8 @@ public class DAODriver
         choices.add("DK004");
         choices.add("DK005");
         updateCourseChoices(ICourseChoiceDAO, 109, choicesB);
+
+ */
     }
 
     public void registerStudent(Student student)
@@ -122,23 +125,51 @@ public class DAODriver
         }
     }
 
-    public static void getCourseChoicesByCAONumber(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber){
+    public List<String> getAllCourseIDs(){
+        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
         try
         {
-            System.out.println("\nFinding course choices by CAO number (CAO Number: " + caoNumber +")...");
-            List<Course> course = ICourseChoiceDAO.getCourseChoicesByCAONumber(caoNumber);
+            List<Course> allCourses = ICourseDAO.getAllCourses();
+            List<String> allCourseIDs = new ArrayList<>();
+
+            for(Course course : allCourses)
+            {
+                allCourseIDs.add(course.getCourseId());
+            }
+            return allCourseIDs;
         }
         catch(DAOException daoe)
         {
             System.out.println(daoe.getMessage());
+            return null;
         }
     }
 
-    public static void updateCourseChoices(ICourseChoiceDAOInterface ICourseChoiceDAO, int caoNumber, List<String> newChoicesByID){
+    public List<String> getCourseChoices(int caoNumber){
+        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
         try
         {
-            System.out.println("\nUpdating course choices using course IDs (CAO Number " + caoNumber +")...");
-            boolean success = ICourseChoiceDAO.updateCourseChoices(caoNumber, newChoicesByID);
+            System.out.println("\nGetting course choices (CAO Number " + caoNumber +")...");
+            return ICourseChoiceDAO.getCourseChoicesByCAONumber(caoNumber);
+        }
+        catch(DAOException daoe)
+        {
+            System.out.println(daoe.getMessage());
+            return null;
+        }
+    }
+
+    public void updateCourseChoices(int caoNumber, List<String> newChoicesByID){
+        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
+        try
+        {
+            if(newChoicesByID != null) {
+                System.out.println("\nUpdating course choices (CAO Number " + caoNumber + ")...");
+                ICourseChoiceDAO.updateCourseChoices(caoNumber, newChoicesByID);
+            }
+            else{
+                System.out.println(Colours.RED + "updateCourseChoices() - newChoicesByID is null" + Colours.RESET);
+            }
         }
         catch(DAOException daoe)
         {
