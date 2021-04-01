@@ -8,6 +8,7 @@ package com.dkit.gd2.kevinmcenroe.client;
  */
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
@@ -76,7 +77,7 @@ public class CAOClient
 
                             if(daoDriver.logIn(studentToLogIn))
                                 //Successful log in
-                                doLoggedInMenuLoop();
+                                doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
                             else
                                 doMainMenuLoop();
 
@@ -98,7 +99,7 @@ public class CAOClient
         System.out.println("Thanks for using the app");
     }
 
-    private void doLoggedInMenuLoop()
+    private void doLoggedInMenuLoop(int loggedInCAONumber)
     {
         boolean loop = true;
         int option;
@@ -130,20 +131,36 @@ public class CAOClient
                     case LOGOUT:
                         message = generateLogOutRequest();
                         System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
-                        System.out.println(Colours.GREEN + "\nLogged out" + Colours.RESET);
+                        System.out.println("\nLogging out...");
+                        loggedInCAONumber = -1;
+                        System.out.println(Colours.GREEN + "Logged out" + Colours.RESET);
                         doMainMenuLoop();
                         break;
                     case DISPLAY_COURSE:
                         String courseID = menuManager.displayGetCourseMenu();
+
+                        message = generateCourseRequest(courseID);
+                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+
                         Course course = daoDriver.getCourseByCourseID(courseID);
                         if(course != null) {
-                            message = generateCourseRequest(course);
-                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
-                            System.out.println(Colours.GREEN + "\n"+course + Colours.RESET);
+                            System.out.println(Colours.GREEN + course + Colours.RESET);
                         }
                         break;
                     case DISPLAY_ALL_COURSES:
-                        //courseChoicesManager.displayUpdateChoices(student.getCaoNumber());
+                        message = generateAllCoursesRequest();
+                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+
+                        List<Course> allCourses = daoDriver.getAllCourses();
+                        if(allCourses != null){
+                            for(Course foundCourse : allCourses)
+                                System.out.println(Colours.GREEN + foundCourse + Colours.RESET);
+                        }
+                        break;
+                    case DISPLAY_CURRENT_CHOICES:
+                        message = generateCurrentChoicesRequest(loggedInCAONumber);
+                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+
                         break;
                     case UPDATE_ALL_COURSES:
                         loop = false;
@@ -177,7 +194,6 @@ public class CAOClient
         message.append(CAOService.BREAKING_CHARACTER);
 
         message.append(password);
-        message.append(CAOService.BREAKING_CHARACTER);
 
         return message.toString();
     }
@@ -197,7 +213,6 @@ public class CAOClient
         message.append(CAOService.BREAKING_CHARACTER);
 
         message.append(password);
-        message.append(CAOService.BREAKING_CHARACTER);
 
         return message.toString();
     }
@@ -207,6 +222,36 @@ public class CAOClient
         return message.toString();
     }
 
+    private String generateCourseRequest(String courseID){
+        StringBuilder message = new StringBuilder(CAOService.DISPLAY_COURSE_COMMAND);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        message.append(courseID);
+
+        return message.toString();
+    }
+
+    private String generateAllCoursesRequest(){
+        StringBuilder message = new StringBuilder(CAOService.DISPLAY_ALL_COURSES_COMMAND);
+        return message.toString();
+    }
+
+    //DISPLAY CURRENT%%$caoNumber
+    private String generateCurrentChoicesRequest(int caoNumber){
+        StringBuilder message = new StringBuilder(CAOService.UPDATE_CHOICES_COMMAND);
+        message.append(CAOService.BREAKING_CHARACTER);
+        message.append(caoNumber);
+
+        return message.toString();
+    }
+
+    private String generateUpdateChoicesRequest(){
+        StringBuilder message = new StringBuilder(CAOService.UPDATE_CHOICES_COMMAND);
+        return message.toString();
+    }
+
+
+    /* May be revisited for server side of protocol in Deliverable 2
     private String generateCourseRequest(Course course){
         StringBuilder message = new StringBuilder(CAOService.DISPLAY_COURSE_COMMAND);
         message.append(CAOService.BREAKING_CHARACTER);
@@ -226,8 +271,8 @@ public class CAOClient
         message.append(CAOService.BREAKING_CHARACTER);
 
         message.append(institution);
-        message.append(CAOService.BREAKING_CHARACTER);
 
         return message.toString();
     }
+*/
 }

@@ -26,9 +26,9 @@ public class DAODriver
         //logIn(IStudentDAO, sampleStudent);
 
         //Course DAO Interaction
-        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
+        //ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
         //getCourseByCourseID(ICourseDAO, "DK001");
-        getAllCourses(ICourseDAO);
+        //getAllCourses(ICourseDAO);
 
         //CourseChoice DAO Interaction
         ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
@@ -108,15 +108,17 @@ public class DAODriver
         }
     }
 
-    public static void getAllCourses(ICourseDAOInterface ICourseDAO){
+    public List<Course> getAllCourses(){
+        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
         try
         {
             System.out.println("\nGetting all courses...");
-            List<Course> course = ICourseDAO.getAllCourses();
+            return ICourseDAO.getAllCourses();
         }
         catch(DAOException daoe)
         {
             System.out.println(daoe.getMessage());
+            return null;
         }
     }
 

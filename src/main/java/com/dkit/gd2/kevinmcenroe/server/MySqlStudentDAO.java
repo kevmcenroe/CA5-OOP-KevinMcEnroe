@@ -143,7 +143,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
             if (rs.next())
             {
-                System.out.println(Colours.GREEN + "Successfully logged in (CAO Number: " +caoNumber + ")" + Colours.RESET);
+                System.out.println(Colours.GREEN + "Logged in successfully (CAO Number: " +caoNumber + ")" + Colours.RESET);
                 return true;
             }
             else

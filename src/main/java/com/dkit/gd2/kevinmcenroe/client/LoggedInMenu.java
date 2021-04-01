@@ -6,5 +6,6 @@ public enum LoggedInMenu {
     LOGOUT,
     DISPLAY_COURSE,
     DISPLAY_ALL_COURSES,
+    DISPLAY_CURRENT_CHOICES,
     UPDATE_ALL_COURSES;
 }
