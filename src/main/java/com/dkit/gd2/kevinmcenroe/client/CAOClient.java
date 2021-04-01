@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
+import com.dkit.gd2.kevinmcenroe.core.Course;
 import com.dkit.gd2.kevinmcenroe.core.Student;
 
 public class CAOClient
@@ -38,24 +39,14 @@ public class CAOClient
         while(loop)
         {
             MenuManager.displayMainMenu();
-            try
-            {
-                /* This code will be revisited in Deliverable 2
-                Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
-
-                OutputStream out = dataSocket.getOutputStream();
-                PrintWriter output = new PrintWriter(new OutputStreamWriter(out));
-                InputStream in = dataSocket.getInputStream();
-                Scanner scannerInput = new Scanner(new InputStreamReader(in));
-                Scanner keyboard = new Scanner(System.in);
-                */
-
+            try{
                 DAODriver daoDriver = new DAODriver();
 
-                String message = "";
-                String input = keyboard.nextLine();
+                String message;
 
-                while(!message.equals(CAOService.LOGOUT_COMMAND)) {
+
+                //while(!message.equals(CAOService.LOGOUT_COMMAND)) {
+                    String input = keyboard.nextLine();
                     if (input.length() != 1)
                         throw new IllegalArgumentException();
                     else
@@ -63,7 +54,6 @@ public class CAOClient
 
                     if (option < 0 || option >= StartMenu.values().length)
                         throw new IllegalArgumentException();
-                    //String response = "";
 
                     StartMenu menuOption = StartMenu.values()[option];
                     switch (menuOption) {
@@ -79,33 +69,21 @@ public class CAOClient
 
                             doMainMenuLoop();
                             break;
-                            /* This code will be revisited in Deliverable 2
-                            //Send message
-                            output.println(message);
-                            output.flush();
-
-                            //Listen for response
-                            response = scannerInput.nextLine();
-                            System.out.println("Sent: " + message);
-                            System.out.println("Response: " + response);
-                            */
                         case LOGIN:
                             Student studentToLogIn = menuManager.displayStudentMenu();
                             message = generateLogInRequest(studentToLogIn);
                             System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
                             if(daoDriver.logIn(studentToLogIn))
-                            {
                                 //Successful log in
                                 doLoggedInMenuLoop();
-                            }
                             else
-                            {
                                 doMainMenuLoop();
-                            }
+
+                            loop = false;
                             break;
                     }
-                }
+                //}
             }
             catch(InputMismatchException ime)
             {
@@ -118,6 +96,70 @@ public class CAOClient
             }
         }
         System.out.println("Thanks for using the app");
+    }
+
+    private void doLoggedInMenuLoop()
+    {
+        boolean loop = true;
+        int option;
+        MenuManager menuManager = new MenuManager();
+        while(loop)
+        {
+            MenuManager.displayLoggedInMenu();
+            try
+            {
+                DAODriver daoDriver = new DAODriver();
+
+                String message;
+
+                String input = keyboard.nextLine();
+                if(input.length() != 1)
+                    throw new IllegalArgumentException();
+                else
+                    option = Integer.parseInt(input);
+
+                if(option < 0 || option >= LoggedInMenu.values().length)
+                    throw new IllegalArgumentException();
+
+                LoggedInMenu menuOption = LoggedInMenu.values()[option];
+                switch (menuOption)
+                {
+                    case QUIT:
+                        loop = false;
+                        break;
+                    case LOGOUT:
+                        message = generateLogOutRequest();
+                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+                        System.out.println(Colours.GREEN + "\nLogged out" + Colours.RESET);
+                        doMainMenuLoop();
+                        break;
+                    case DISPLAY_COURSE:
+                        String courseID = menuManager.displayGetCourseMenu();
+                        Course course = daoDriver.getCourseByCourseID(courseID);
+                        if(course != null) {
+                            message = generateCourseRequest(course);
+                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+                            System.out.println(Colours.GREEN + "\n"+course + Colours.RESET);
+                        }
+                        break;
+                    case DISPLAY_ALL_COURSES:
+                        //courseChoicesManager.displayUpdateChoices(student.getCaoNumber());
+                        break;
+                    case UPDATE_ALL_COURSES:
+                        loop = false;
+                        break; // Exit the loop
+                }
+            }
+            catch(InputMismatchException ime)
+            {
+                System.out.println(Colours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + Colours.RESET);
+                keyboard.nextLine();
+            }
+            catch(IllegalArgumentException iae)
+            {
+                System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
+            }
+        }
     }
 
     private String generateRegisterRequest(Student student){
@@ -160,55 +202,32 @@ public class CAOClient
         return message.toString();
     }
 
-    private void doLoggedInMenuLoop()
-    {
-        boolean loop = true;
-        int option;
-        while(loop)
-        {
-            MenuManager.displayLoggedInMenu();
-            try
-            {
-                String input = keyboard.nextLine();
-                if(input.length() != 1)
-                    throw new IllegalArgumentException();
-                else
-                    option = Integer.parseInt(input);
+    private String generateLogOutRequest(){
+        StringBuilder message = new StringBuilder(CAOService.LOGOUT_COMMAND);
+        return message.toString();
+    }
 
-                if(option < 0 || option >= LoggedInMenu.values().length)
-                    throw new IllegalArgumentException();
+    private String generateCourseRequest(Course course){
+        StringBuilder message = new StringBuilder(CAOService.DISPLAY_COURSE_COMMAND);
+        message.append(CAOService.BREAKING_CHARACTER);
 
-                //courseChoicesManager.syncCourseData();
-                LoggedInMenu menuOption = LoggedInMenu.values()[option];
-                switch (menuOption)
-                {
-                    case QUIT:
-                        //courseChoicesManager.displayCourseDetails();
-                        break; // exit the loop
-                    case LOGOUT:
-                        //courseChoicesManager.displayAllCourses();
-                        break;
-                    case DISPLAY_COURSE:
-                        //courseChoicesManager.displayStudentChoices(student.getCaoNumber());
-                        break;
-                    case DISPLAY_ALL_COURSES:
-                        //courseChoicesManager.displayUpdateChoices(student.getCaoNumber());
-                        break;
-                    case UPDATE_ALL_COURSES:
-                        loop = false;
-                        break; // Exit the loop
-                }
-            }
-            catch(InputMismatchException ime)
-            {
-                System.out.println(Colours.RED + "Please enter a valid option (InputMismatchException - " + ime.getMessage() + ")" + Colours.RESET);
-                keyboard.nextLine();
-            }
-            catch(IllegalArgumentException iae)
-            {
-                System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
-            }
-        }
-        System.out.println("Thanks for using the student menu");
+        String courseID = course.getCourseId();
+        String level = course.getLevel();
+        String title = course.getTitle();
+        String institution = course.getInstitution();
+
+        message.append(courseID);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        message.append(level);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        message.append(title);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        message.append(institution);
+        message.append(CAOService.BREAKING_CHARACTER);
+
+        return message.toString();
     }
 }

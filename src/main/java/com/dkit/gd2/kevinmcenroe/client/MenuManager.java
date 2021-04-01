@@ -34,8 +34,12 @@ public class MenuManager {
                     input = keyboard.nextLine();
                 }
                 return input;
-            case IDLE_COURSE_ID:
-                break;
+            case COURSE_ID:
+                while(!regexChecker.checkCourseID(input)){
+                    System.out.print("Please enter " + request + " :>");
+                    input = keyboard.nextLine();
+                }
+                return input;
             case CHOICE_COURSE_ID:
                 break;
         }
@@ -82,8 +86,9 @@ public class MenuManager {
 
     //Course DAO Menus
 
-    public void displayGetCourseByID(){
-
+    public String displayGetCourseMenu(){
+        String courseID = getInput("Course ID", InputType.COURSE_ID);
+        return courseID;
     }
 
     public void displayGetAllCourses(){

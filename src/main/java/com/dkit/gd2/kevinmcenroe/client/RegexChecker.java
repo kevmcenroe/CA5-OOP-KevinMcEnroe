@@ -52,13 +52,28 @@ public class RegexChecker
     }
 
     public boolean checkPassword(String password){
-        // This regex was adapted from https://stackoverflow.com/questions/2149680/regex-date-format-validation-on-java
+        //This regex was adapted from https://stackoverflow.com/questions/2149680/regex-date-format-validation-on-java
         String passwordPattern = "^.{8,}$";
         Pattern pattern = Pattern.compile((passwordPattern));
         Matcher matcher = pattern.matcher(password);
 
         if(!matcher.matches()) {
             System.out.println(Colours.RED + "Invalid Password" + Colours.RESET);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public boolean checkCourseID(String courseID){
+        String courseIDPattern = "^[a-zA-Z0-9]*$";
+        Pattern pattern = Pattern.compile((courseIDPattern));
+        Matcher matcher = pattern.matcher(courseID);
+
+        if(!matcher.matches()) {
+            System.out.println(Colours.RED + "Invalid CourseID" + Colours.RESET);
             return false;
         }
         else

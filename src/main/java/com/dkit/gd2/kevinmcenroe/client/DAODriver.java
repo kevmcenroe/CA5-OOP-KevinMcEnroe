@@ -27,7 +27,7 @@ public class DAODriver
 
         //Course DAO Interaction
         ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
-        getCourseByCourseID(ICourseDAO, "DK001");
+        //getCourseByCourseID(ICourseDAO, "DK001");
         getAllCourses(ICourseDAO);
 
         //CourseChoice DAO Interaction
@@ -94,15 +94,17 @@ public class DAODriver
         }
     }
 
-    public static void getCourseByCourseID(ICourseDAOInterface ICourseDAO, String courseID){
+    public Course getCourseByCourseID(String courseID){
+        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
         try
         {
             System.out.println("\nFinding course by courseID (CourseID: " + courseID + ")...");
-            Course course = ICourseDAO.getCourseByID(courseID);
+            return ICourseDAO.getCourseByID(courseID);
         }
         catch(DAOException daoe)
         {
             System.out.println(daoe.getMessage());
+            return null;
         }
     }
 
