@@ -11,11 +11,8 @@ import java.util.regex.Pattern;
 
 public class RegexChecker
 {
-
-    // checks for date of birth, etc
     public boolean checkCAONumber(String caoNumber){
-
-        String caoNumberPattern = "^[0-9]*$";
+        String caoNumberPattern = "^[0-9]{8,}$";
         Pattern pattern = Pattern.compile((caoNumberPattern));
         Matcher matcher = pattern.matcher(caoNumber);
 
@@ -27,12 +24,6 @@ public class RegexChecker
         {
             return true;
         }
-        //TODO Link this to CAOClient to check if CAO Number is already registered
-        /*
-        else if(isRegistered(Integer.parseInt(caoNumber))){
-            System.out.println(Colours.RED + "A student of CAO Number " + caoNumber + " already exists" + Colours.RESET);
-            return false;
-        }*/
     }
 
     public boolean checkDateOfBirth(String dateOfBirth){
@@ -52,7 +43,7 @@ public class RegexChecker
     }
 
     public boolean checkPassword(String password){
-        //This regex was adapted from https://stackoverflow.com/questions/2149680/regex-date-format-validation-on-java
+        //This regex was adapted from https://stackoverflow.com/questions/3166738/minimum-6-characters-regex-expression/3167082
         String passwordPattern = "^.{8,}$";
         Pattern pattern = Pattern.compile((passwordPattern));
         Matcher matcher = pattern.matcher(password);
@@ -84,6 +75,7 @@ public class RegexChecker
         }
         else
         {
+            System.out.println(Colours.GREEN + "Valid course ID" + Colours.RESET);
             return true;
         }
     }

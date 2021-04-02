@@ -14,8 +14,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 {
     @Override
     public boolean registerStudent(Student student) throws DAOException {
-        //System.out.println("Registering student [CAO Number: " + student.getCaoNumber() + "]...");
-
         int caoNumber = student.getCaoNumber();
         String dateOfBirth = student.getDayOfBirth();
         String password = student.getPassword();
@@ -28,7 +26,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             if(!isRegistered(caoNumber)) {
                 con = this.getConnection();
 
-                //String query = "insert into student(cao_number, date_of_birth, password) values(" + "\"" + caoNumber +  "\",\"" + dateOfBirth + "\",\"" + password + "\")";
                 String query = "insert into student(cao_number, date_of_birth, password) values(?, ?, ?)";
                 ps = con.prepareStatement(query);
                 ps.setString(1, Integer.toString(caoNumber));
@@ -36,12 +33,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
                 ps.setString(3, password);
                 ps.executeUpdate();
 
-                if (isRegistered(caoNumber)) {
-                    //System.out.println(Colours.GREEN + "Student successfully registered (CAO Number: " + caoNumber + ")" + Colours.RESET);
-                    return true;
-                } else {
-                    return false;
-                }
+                return isRegistered(caoNumber);
             }
             else
             {
@@ -72,8 +64,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
     @Override
     public boolean isRegistered(int caoNumber) throws DAOException {
-        //System.out.println("Confirming student registration [CAO Number: " + caoNumber + "]...");
-
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs;
@@ -85,16 +75,9 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             String query = "select * from student where cao_number = ?";
             ps = con.prepareStatement(query);
             ps.setString(1, Integer.toString(caoNumber));
-
             rs = ps.executeQuery();
 
-            if (rs.next())
-            {
-                return true;
-            }
-            else
-                return false;
-
+            return rs.next();
         }
         catch (SQLException se)
         {
@@ -119,8 +102,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
     @Override
     public boolean logInStudent(Student student) throws DAOException {
-        //System.out.println("Logging in student [CAO Number: " + student.getCaoNumber() + "]...");
-
         int caoNumber = student.getCaoNumber();
         String dateOfBirth = student.getDayOfBirth();
         String password = student.getPassword();
@@ -138,7 +119,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             ps.setString(1, Integer.toString(caoNumber));
             ps.setString(2, dateOfBirth);
             ps.setString(3, password);
-
             rs = ps.executeQuery();
 
             if (rs.next())

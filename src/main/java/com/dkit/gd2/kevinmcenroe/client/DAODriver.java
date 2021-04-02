@@ -4,57 +4,14 @@ package com.dkit.gd2.kevinmcenroe.client;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.server.*;
 import com.dkit.gd2.kevinmcenroe.core.Student;
-
 import com.dkit.gd2.kevinmcenroe.core.Course;
 
 import java.util.ArrayList;
 import java.util.List;
 
 // Adapted from sample code
-// Database driver application
 public class DAODriver
 {
-    public void main( String[] args )
-    {
-
-        System.out.println( "Database Access" );
-        Student sampleStudent = new Student(105, "1999-01-01", "password100");
-/*
-        Student DAO Interaction
-
-        isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
-        registerStudent(IStudentDAO, sampleStudent);
-        logIn(IStudentDAO, sampleStudent);
-
-        Course DAO Interaction
-        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
-        getCourseByCourseID(ICourseDAO, "DK001");
-        getAllCourses(ICourseDAO);
-
-        //CourseChoice DAO Interaction
-        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
-        getCourseChoicesByCAONumber(ICourseChoiceDAO,1);
-
-        List<String> choices = new ArrayList<>();
-        choices.add("DK006");
-        choices.add("DK002");
-        choices.add("DK003");
-        choices.add("DK004");
-        choices.add("DK005");
-        updateCourseChoices(ICourseChoiceDAO, 105, choices);
-
-        Student sampleStudentB = new Student(109, "1999-01-01", "password100");
-        List<String> choicesB = new ArrayList<>();
-        choices.add("DK006");
-        choices.add("DK002");
-        choices.add("DK003");
-        choices.add("DK004");
-        choices.add("DK005");
-        updateCourseChoices(ICourseChoiceDAO, 109, choicesB);
-
- */
-    }
-
     public void registerStudent(Student student)
     {
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();

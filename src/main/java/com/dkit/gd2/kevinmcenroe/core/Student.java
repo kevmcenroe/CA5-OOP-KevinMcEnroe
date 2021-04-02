@@ -3,6 +3,7 @@ package com.dkit.gd2.kevinmcenroe.core;
 
 import java.util.Objects;
 
+////Adapted from CA4
 public class Student {
     private int caoNumber;  // In the CAO system, cao number is unique identifier for student
     private String dateOfBirth; // yyyy-mm-dd

@@ -17,6 +17,11 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+//During development of the Client, I found myself developing part of the server to resolve socket errors
+//Upon clarification from the lecturer, I removed the socket therefore removing the need for the server in Deliverable 1, as per the brief
+//This code may be revisited in Deliverable 2
+
+//Adapted from sample code
 public class CAOServer {
     public static void main(String[] args) {
         try {

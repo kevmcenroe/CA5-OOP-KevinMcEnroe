@@ -6,7 +6,7 @@ import com.dkit.gd2.kevinmcenroe.core.Student;
 //Adapted from sample code
 public interface IStudentDAOInterface
 {
-    public boolean registerStudent(Student student) throws DAOException;
-    public boolean isRegistered(int caoNumber) throws DAOException;
-    public boolean logInStudent(Student student) throws DAOException;
+    boolean registerStudent(Student student) throws DAOException;
+    boolean isRegistered(int caoNumber) throws DAOException;
+    boolean logInStudent(Student student) throws DAOException;
 }

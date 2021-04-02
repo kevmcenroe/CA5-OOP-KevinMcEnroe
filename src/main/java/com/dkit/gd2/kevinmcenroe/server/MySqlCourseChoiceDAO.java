@@ -14,8 +14,6 @@ import java.util.List;
 public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOInterface{
     @Override
     public List<String> getCourseChoicesByCAONumber(int caoNumber) throws DAOException {
-        //System.out.println("Getting course choices by CAO number [CAO Number: " + caoNumber + "]...");
-
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -36,6 +34,7 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
                 while(rs.next()) {
                     String gotCourseID = rs.getString("courseid");
 
+                    //If a course object were required at this point, this code may be useful:
                     //MySqlCourseDAO courseDAO = new MySqlCourseDAO();
                     //Course matchingCourse = courseDAO.getCourseByID(gotCourseID);
                     //courses.add(matchingCourse);

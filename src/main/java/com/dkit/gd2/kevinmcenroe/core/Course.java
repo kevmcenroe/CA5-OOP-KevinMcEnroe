@@ -3,6 +3,7 @@ package com.dkit.gd2.kevinmcenroe.core;
 
 import java.util.Objects;
 
+//Adapted from CA4
 public class Course {
 
     private String courseId;   // e.g. DK821

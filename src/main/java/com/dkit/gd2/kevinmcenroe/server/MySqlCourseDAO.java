@@ -19,7 +19,6 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Course> courses = new ArrayList<>();
 
         try
         {
@@ -38,8 +37,7 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                 String gotTitle = rs.getString("title");
                 String gotInstitution = rs.getString("institution");
 
-                Course matchingCourse = new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
-                return matchingCourse;
+                return new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
             }
             else
             {

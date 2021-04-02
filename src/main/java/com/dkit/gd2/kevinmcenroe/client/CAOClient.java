@@ -7,7 +7,6 @@ package com.dkit.gd2.kevinmcenroe.client;
 /* The CAOClient offers students a menu and sends messages to the server using TCP Sockets
  */
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -45,47 +44,43 @@ public class CAOClient
                 DAODriver daoDriver = new DAODriver();
 
                 String message;
+                String input = keyboard.nextLine();
 
+                if (input.length() != 1)
+                    throw new IllegalArgumentException();
+                else
+                    option = Integer.parseInt(input);
 
-                //while(!message.equals(CAOService.LOGOUT_COMMAND)) {
-                    String input = keyboard.nextLine();
-                    if (input.length() != 1)
-                        throw new IllegalArgumentException();
-                    else
-                        option = Integer.parseInt(input);
+                if (option < 0 || option >= StartMenu.values().length)
+                    throw new IllegalArgumentException();
 
-                    if (option < 0 || option >= StartMenu.values().length)
-                        throw new IllegalArgumentException();
+                StartMenu menuOption = StartMenu.values()[option];
+                switch (menuOption) {
+                    case QUIT_APPLICATION:
+                        loop = false;
+                        break;
+                    case REGISTER:
+                        Student studentToRegister = menuManager.displayStudentMenu();
+                        message = generateRegisterRequest(studentToRegister);
+                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                    StartMenu menuOption = StartMenu.values()[option];
-                    switch (menuOption) {
-                        case QUIT_APPLICATION:
-                            loop = false;
-                            break; // Exit the loop
-                        case REGISTER:
-                            Student studentToRegister = menuManager.displayStudentMenu();
-                            message = generateRegisterRequest(studentToRegister);
-                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+                        daoDriver.registerStudent(studentToRegister);
 
-                            daoDriver.registerStudent(studentToRegister);
+                        doMainMenuLoop();
+                        break;
+                    case LOGIN:
+                        Student studentToLogIn = menuManager.displayStudentMenu();
+                        message = generateLogInRequest(studentToLogIn);
+                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
+                        if(daoDriver.logIn(studentToLogIn))
+                            //Successful log in
+                            doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
+                        else
                             doMainMenuLoop();
-                            break;
-                        case LOGIN:
-                            Student studentToLogIn = menuManager.displayStudentMenu();
-                            message = generateLogInRequest(studentToLogIn);
-                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                            if(daoDriver.logIn(studentToLogIn))
-                                //Successful log in
-                                doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
-                            else
-                                doMainMenuLoop();
-
-                            loop = false;
-                            break;
-                    }
-                //}
+                        break;
+                }
             }
             catch(InputMismatchException ime)
             {
@@ -105,6 +100,7 @@ public class CAOClient
         boolean loop = true;
         int option;
         MenuManager menuManager = new MenuManager();
+
         while(loop)
         {
             MenuManager.displayLoggedInMenu();
@@ -124,18 +120,18 @@ public class CAOClient
                     throw new IllegalArgumentException();
 
                 LoggedInMenu menuOption = LoggedInMenu.values()[option];
-                switch (menuOption)
-                {
+                switch (menuOption){
                     case QUIT:
                         loop = false;
                         break;
                     case LOGOUT:
                         message = generateLogOutRequest();
                         System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+
                         System.out.println("\nLogging out...");
                         loggedInCAONumber = -1;
                         System.out.println(Colours.GREEN + "Logged out" + Colours.RESET);
-                        doMainMenuLoop();
+                        loop = false;
                         break;
                     case DISPLAY_COURSE:
                         String courseID = menuManager.displayGetCourseMenu();
@@ -162,7 +158,6 @@ public class CAOClient
                         message = generateCurrentChoicesRequest(loggedInCAONumber);
                         System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                        List<String> allChoices = daoDriver.getCourseChoices(loggedInCAONumber);
                         menuManager.displayCurrentChoices(loggedInCAONumber);
                         break;
                     case UPDATE_CURRENT_CHOICES:
@@ -173,7 +168,6 @@ public class CAOClient
                             System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
                             daoDriver.updateCourseChoices(loggedInCAONumber, newChoices);
                         }
-
                         break; // Exit the loop
                 }
             }
@@ -228,31 +222,19 @@ public class CAOClient
     }
 
     private String generateLogOutRequest(){
-        StringBuilder message = new StringBuilder(CAOService.LOGOUT_COMMAND);
-        return message.toString();
+        return CAOService.LOGOUT_COMMAND;
     }
 
     private String generateCourseRequest(String courseID){
-        StringBuilder message = new StringBuilder(CAOService.DISPLAY_COURSE_COMMAND);
-        message.append(CAOService.BREAKING_CHARACTER);
-
-        message.append(courseID);
-
-        return message.toString();
+        return CAOService.DISPLAY_COURSE_COMMAND + CAOService.BREAKING_CHARACTER + courseID;
     }
 
     private String generateAllCoursesRequest(){
-        StringBuilder message = new StringBuilder(CAOService.DISPLAY_ALL_COURSES_COMMAND);
-        return message.toString();
+        return CAOService.DISPLAY_ALL_COURSES_COMMAND;
     }
 
-    //DISPLAY CURRENT%%$caoNumber
     private String generateCurrentChoicesRequest(int caoNumber){
-        StringBuilder message = new StringBuilder(CAOService.UPDATE_CHOICES_COMMAND);
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(caoNumber);
-
-        return message.toString();
+        return CAOService.DISPLAY_CHOICES_COMMAND + CAOService.BREAKING_CHARACTER + caoNumber;
     }
 
     private String generateUpdateChoicesRequest(int caoNumber, List<String> newChoices){
@@ -268,7 +250,6 @@ public class CAOClient
 
         return message.toString();
     }
-
 
     /* May be revisited for server side of protocol in Deliverable 2
     private String generateCourseRequest(Course course){
