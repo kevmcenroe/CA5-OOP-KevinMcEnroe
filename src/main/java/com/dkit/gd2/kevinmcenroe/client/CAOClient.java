@@ -66,7 +66,7 @@ public class CAOClient
 
                         daoDriver.registerStudent(studentToRegister);
 
-                        doMainMenuLoop();
+                        //doMainMenuLoop();
                         break;
                     case LOGIN:
                         Student studentToLogIn = menuManager.displayStudentMenu();
@@ -76,7 +76,7 @@ public class CAOClient
                         if(daoDriver.logIn(studentToLogIn))
                             doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
                         else
-                            doMainMenuLoop();
+                            //doMainMenuLoop();
 
                         break;
                 }
