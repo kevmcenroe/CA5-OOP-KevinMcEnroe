@@ -5,9 +5,9 @@ import java.util.Objects;
 
 ////Adapted from CA4
 public class Student {
-    private int caoNumber;  // In the CAO system, cao number is unique identifier for student
-    private String dateOfBirth; // yyyy-mm-dd
-    private String password;    // min 8 characters
+    private int caoNumber;
+    private String dateOfBirth;
+    private String password;
 
     public Student(Student student) {
         this.caoNumber = student.getCaoNumber();
@@ -34,8 +34,6 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
         this.password = password;
     }
-
-    //public boolean verifyLoginCredentials( yyy-mm-dd, password);
 
     public int getCaoNumber() {
         return caoNumber;

@@ -26,19 +26,6 @@ public class DAODriver
         }
     }
 
-    public static void isRegistered(IStudentDAOInterface IStudentDAO, int caoNumber)
-    {
-        try
-        {
-            System.out.println("\nVerifying if student is registered (CAO Number: " + caoNumber + ")...");
-            IStudentDAO.isRegistered(caoNumber);
-        }
-        catch(DAOException daoe)
-        {
-            System.out.println(daoe.getMessage());
-        }
-    }
-
     public boolean logIn(Student student)
     {
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();

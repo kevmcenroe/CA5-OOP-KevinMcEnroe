@@ -127,6 +127,7 @@ public class MenuManager {
                 }
                 return  newChoices;
             case UPDATE_ONE_CHOICE:
+                //I developed this option to address choice update feedback from CA4
                 List<String> currentChoices = daoDriver.getCourseChoices(caoNumber);
                 if (currentChoices != null) {
                     newChoices = displayChangeChoiceMenu(caoNumber);

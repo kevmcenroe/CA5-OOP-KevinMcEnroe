@@ -74,7 +74,6 @@ public class CAOClient
                         System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
                         if(daoDriver.logIn(studentToLogIn))
-                            //Successful log in
                             doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
                         else
                             doMainMenuLoop();

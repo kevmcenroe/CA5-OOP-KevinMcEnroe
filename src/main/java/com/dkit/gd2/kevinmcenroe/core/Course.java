@@ -6,14 +6,12 @@ import java.util.Objects;
 //Adapted from CA4
 public class Course {
 
-    private String courseId;   // e.g. DK821
-    private String level;      // e.g. 7, 8, 9, 10
-    private String title;      // e.g. BSc in Computing in Software Development
-    private String institution; // Dundalk Institute of Technology
+    private String courseId;
+    private String level;
+    private String title;
+    private String institution;
 
     // Copy Constructor
-    // Accepts a Course object as an argument and copies all the field values
-    // into a new Course object. Returns the new cloned object.
     public Course(Course course) {
         this.courseId = course.courseId;
         this.level = course.level;
@@ -28,8 +26,6 @@ public class Course {
         this.title = title;
         this.institution = institution;
     }
-
-
 
     public String getCourseId() {
         return courseId;
