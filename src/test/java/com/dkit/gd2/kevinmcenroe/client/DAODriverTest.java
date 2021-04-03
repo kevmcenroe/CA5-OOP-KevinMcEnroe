@@ -10,32 +10,6 @@ import java.util.List;
 
 public class DAODriverTest extends TestCase {
 
-    /*
-        Student DAO Interaction
-        //Student DAO Interaction
-        isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
-        registerStudent(IStudentDAO, sampleStudent);
-        logIn(IStudentDAO, sampleStudent);
-        //isRegistered(IStudentDAO, sampleStudent.getCaoNumber());
-        //registerStudent(IStudentDAO, sampleStudent);
-        //logIn(IStudentDAO, sampleStudent);
-
-        //Course DAO Interaction
-        //ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
-        //getCourseByCourseID(ICourseDAO, "DK001");
-        //getAllCourses(ICourseDAO);
-        Course DAO Interaction
-        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
-        getCourseByCourseID(ICourseDAO, "DK001");
-        getAllCourses(ICourseDAO);
-        //CourseChoice DAO Interaction
-        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
-@@ -50,6 +51,8 @@ public void main( String[] args )
-        choices.add("DK004");
-        choices.add("DK005");
-        updateCourseChoices(ICourseChoiceDAO, 109, choicesB);
- */
-
     public void testRegisterStudent() throws DAOException {
         Student student = new Student(87654321, "1999-01-01", "mypassword");
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
@@ -64,10 +38,9 @@ public class DAODriverTest extends TestCase {
     public void testGetCourseByCourseID() throws DAOException {
         ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
 
-        String courseID = "TEST001";
-        Course course = new Course(courseID, "8", "Testing and QA", "DKIT");
-        //The test requires that this course be manually inserted into the database (as has been done)
-        //This is done to streamline the test method, reduce number of moving parts and thereby error probability
+        String courseID = "DK001";
+        //The test requires that a course of this ID exist in the database
+        //This courseID can be changed to match any other existing course
 
         Course gotCourse = ICourseDAO.getCourseByID(courseID);
         assertEquals(gotCourse.getCourseId(), courseID);
@@ -111,7 +84,59 @@ public class DAODriverTest extends TestCase {
         Course courseBI = new Course("TC009", "7", "English Studies", "TCD");
         Course courseBJ = new Course("TC010", "7", "German", "TCD");
 
-        Course courseCA = new Course("TEST001", "8", "Testing and QA", "DKIT");
+        allCourses.add(courseAA);
+        allCourses.add(courseAB);
+        allCourses.add(courseAC);
+        allCourses.add(courseAD);
+        allCourses.add(courseAE);
+        allCourses.add(courseAF);
+        allCourses.add(courseAG);
+        allCourses.add(courseAH);
+        allCourses.add(courseAI);
+        allCourses.add(courseAJ);
+
+        allCourses.add(courseBA);
+        allCourses.add(courseBB);
+        allCourses.add(courseBC);
+        allCourses.add(courseBD);
+        allCourses.add(courseBE);
+        allCourses.add(courseBF);
+        allCourses.add(courseBG);
+        allCourses.add(courseBH);
+        allCourses.add(courseBI);
+        allCourses.add(courseBJ);
+
+        DAODriver daoDriver = new DAODriver();
+        List<Course> gotCourses = daoDriver.getAllCourses();
+        boolean equals = allCourses.equals(gotCourses);
+
+        assertTrue(equals);
+    }
+
+    public void testGetAllCourseIDs() {
+        //Should additional courses be added to the database, this test should be updated to reflect that
+        List<String> allCourses = new ArrayList<>();
+        String courseAA ="DK001";
+        String courseAB = "DK002";
+        String courseAC = "DK003";
+        String courseAD ="DK004";
+        String courseAE = "DK005";
+        String courseAF = "DK006";
+        String courseAG = "DK007";
+        String courseAH = "DK008";
+        String courseAI = "DK009";
+        String courseAJ = "DK010";
+
+        String courseBA = "TC001";
+        String courseBB = "TC002";
+        String courseBC = "TC003";
+        String courseBD = "TC004";
+        String courseBE = "TC005";
+        String courseBF = "TC006";
+        String courseBG = "TC007";
+        String courseBH = "TC008";
+        String courseBI = "TC009";
+        String courseBJ = "TC010";
 
         allCourses.add(courseAA);
         allCourses.add(courseAB);
@@ -135,21 +160,86 @@ public class DAODriverTest extends TestCase {
         allCourses.add(courseBI);
         allCourses.add(courseBJ);
 
-        allCourses.add(courseCA);
-
-        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
-        List<Course> gotCourses = ICourseDAO.getAllCourses();
+        DAODriver daoDriver = new DAODriver();
+        List<String> gotCourses = daoDriver.getAllCourseIDs();
         boolean equals = allCourses.equals(gotCourses);
 
         assertTrue(equals);
     }
 
-    public void testGetAllCourseIDs() {
-    }
-
     public void testGetCourseChoices() {
+        //This test requires that the student of caoNumber 999999999 remains in the database
+        //Should this entry be manually removed, a replacement caoNumber should be included here
+        int caoNumber = 99999999;
+        String choiceA = "DK010";
+        String choiceB = "DK009";
+        String choiceC = "DK008";
+        String choiceD = "DK007";
+        String choiceE = "DK006";
+        String choiceF = "DK005";
+        String choiceG = "DK004";
+        String choiceH = "DK003";
+        String choiceI = "DK002";
+        String choiceJ = "DK001";
+
+        List<String> choices = new ArrayList<>();
+        choices.add(choiceA);
+        choices.add(choiceB);
+        choices.add(choiceC);
+        choices.add(choiceD);
+        choices.add(choiceE);
+        choices.add(choiceF);
+        choices.add(choiceG);
+        choices.add(choiceH);
+        choices.add(choiceI);
+        choices.add(choiceJ);
+
+        DAODriver daoDriver = new DAODriver();
+        daoDriver.updateCourseChoices(caoNumber, choices);
+        List<String> gotChoices = daoDriver.getCourseChoices(caoNumber);
+
+        assertEquals(choices, gotChoices);
     }
 
     public void testUpdateCourseChoices() {
+        //This test requires that the student of caoNumber 999999999 remains in the database
+        //Should this entry be manually removed, a replacement caoNumber should be included here
+        int caoNumber = 99999999;
+        String choiceA = "TC001";
+        String choiceB = "TC002";
+        String choiceC = "TC003";
+        String choiceD = "TC004";
+        String choiceE = "TC005";
+        String choiceF = "TC006";
+        String choiceG = "TC007";
+        String choiceH = "TC008";
+        String choiceI = "TC009";
+        String choiceJ = "TC010";
+
+        List<String> choices = new ArrayList<>();
+        choices.add(choiceA);
+        choices.add(choiceB);
+        choices.add(choiceC);
+        choices.add(choiceD);
+        choices.add(choiceE);
+        choices.add(choiceF);
+        choices.add(choiceG);
+        choices.add(choiceH);
+        choices.add(choiceI);
+        choices.add(choiceJ);
+
+        DAODriver daoDriver = new DAODriver();
+        daoDriver.updateCourseChoices(caoNumber, choices);
+        List<String> allUpdatedChoices = daoDriver.getCourseChoices(caoNumber);
+
+        assertEquals(choices, allUpdatedChoices);
+
+        String choiceK = "DK001";
+        choices.add(0, choiceK);
+        choices.remove(1);
+
+        daoDriver.updateCourseChoices(caoNumber, choices);
+        List<String> oneUpdatedChoices = daoDriver.getCourseChoices(caoNumber);
+        assertEquals(choices, oneUpdatedChoices);
     }
 }
