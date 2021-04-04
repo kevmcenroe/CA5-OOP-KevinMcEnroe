@@ -22,7 +22,7 @@ public class DAODriver
         }
         catch(DAOException daoe)
         {
-            System.out.println(daoe.getMessage());
+            System.out.println(Colours.RED + "registerStudent() - " + daoe.getMessage() + Colours.RESET);
         }
     }
 
@@ -36,7 +36,7 @@ public class DAODriver
         }
         catch(DAOException daoe)
         {
-            System.out.println(daoe.getMessage());
+            System.out.println(Colours.RED + "logIn() - " + daoe.getMessage() + Colours.RESET);
             return false;
         }
     }
@@ -50,7 +50,7 @@ public class DAODriver
         }
         catch(DAOException daoe)
         {
-            System.out.println(daoe.getMessage());
+            System.out.println(Colours.RED + "getCourseByCourseID() - " + daoe.getMessage() + Colours.RESET);
             return null;
         }
     }
@@ -64,7 +64,7 @@ public class DAODriver
         }
         catch(DAOException daoe)
         {
-            System.out.println(daoe.getMessage());
+            System.out.println(Colours.RED + "getAllCourses() - " + daoe.getMessage() + Colours.RESET);
             return null;
         }
     }
@@ -84,7 +84,7 @@ public class DAODriver
         }
         catch(DAOException daoe)
         {
-            System.out.println(daoe.getMessage());
+            System.out.println(Colours.RED + "getAllCourseIDs() - " + daoe.getMessage() + Colours.RESET);
             return null;
         }
     }
@@ -98,7 +98,7 @@ public class DAODriver
         }
         catch(DAOException daoe)
         {
-            System.out.println(daoe.getMessage());
+            System.out.println(Colours.RED + "getCourseChoices() - " + daoe.getMessage() + Colours.RESET);
             return null;
         }
     }
@@ -117,7 +117,7 @@ public class DAODriver
         }
         catch(DAOException daoe)
         {
-            System.out.println(daoe.getMessage());
+            System.out.println(Colours.RED + "updateCourseChoices() - " + daoe.getMessage() + Colours.RESET);
         }
     }
 }
