@@ -1,2 +1,8 @@
-package com.dkit.gd2.kevinmcenroe.server;public class UpdateChoicesCommand {
+package com.dkit.gd2.kevinmcenroe.server;
+
+public class UpdateChoicesCommand implements ICommand {
+    @Override
+    public String generateResponse(String[] components, DAODriver daoDriver) {
+        return null;
+    }
 }

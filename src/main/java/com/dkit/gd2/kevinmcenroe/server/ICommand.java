@@ -1,2 +1,6 @@
-package com.dkit.gd2.kevinmcenroe.server;public interface ICommand {
+package com.dkit.gd2.kevinmcenroe.server;
+
+public interface ICommand
+{
+    public String generateResponse(String[] components, DAODriver daoDriver);
 }

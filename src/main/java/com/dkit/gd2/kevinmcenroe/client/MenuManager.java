@@ -3,6 +3,7 @@ package com.dkit.gd2.kevinmcenroe.client;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Student;
+import com.dkit.gd2.kevinmcenroe.server.DAODriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,14 @@ public class MenuManager {
                     input = keyboard.nextLine();
                 }
                 return input;
-            case COURSE_ID:
-                while(!regexChecker.checkCourseID(input)){
+            case EXISTING_COURSE_ID:
+                while(!regexChecker.checkExistingCourseID(input)){
+                    System.out.print("Please enter " + request + " :>");
+                    input = keyboard.nextLine();
+                }
+                return input;
+            case ANY_COURSE_ID:
+                while(!regexChecker.checkAnyCourseID(input)){
                     System.out.print("Please enter " + request + " :>");
                     input = keyboard.nextLine();
                 }
@@ -83,7 +90,9 @@ public class MenuManager {
     }
 
     public String displayGetCourseMenu(){
-        return getInput("Course ID", InputType.COURSE_ID);
+        return getInput("Course ID", InputType.ANY_COURSE_ID);
+        // Original below checks if the given course code exists too early, preventing fulfillment of protocol fail response
+        // return getInput("Course ID", InputType.COURSE_ID);
     }
 
     public List<String> displayUpdateCourseChoicesMenu(int caoNumber){
@@ -111,11 +120,11 @@ public class MenuManager {
                     if(i>1)
                         System.out.println();
 
-                    String courseID = getInput("Course ID [Choice " + i + "]", InputType.COURSE_ID);
+                    String courseID = getInput("Course ID [Choice " + i + "]", InputType.EXISTING_COURSE_ID);
                     while(newChoices.contains(courseID))
                     {
                         System.out.println(Colours.RED + "You have already submitted course ID \"" + courseID + "\" as a choice" + Colours.RESET);
-                        courseID = getInput("Course ID [Choice " + i + "]", InputType.COURSE_ID);
+                        courseID = getInput("Course ID [Choice " + i + "]", InputType.EXISTING_COURSE_ID);
                     }
                     newChoices.add(courseID);
                 }
@@ -188,13 +197,13 @@ public class MenuManager {
             throw new IllegalArgumentException();
 
         System.out.println("You have selected choice " + option + ": " + Colours.BLUE + allChoices.get(option) + Colours.RESET);
-        String courseID = getInput("Course ID [Choice " + option + "]", InputType.COURSE_ID);
+        String courseID = getInput("Course ID [Choice " + option + "]", InputType.EXISTING_COURSE_ID);
         while(allChoices.contains(courseID))
         {
             System.out.println(Colours.RED + courseID + " already exists as choice " + allChoices.indexOf(courseID) + Colours.RESET);
             System.out.println("Please enter another course or overwrite choice " + allChoices.indexOf(courseID) + " to free up course " + courseID);
             System.out.println("Available Courses: " + Colours.BLUE + getUnselectedCourses(daoDriver, allChoices) + Colours.RESET);
-            courseID = getInput("Course ID [Choice " + option + "]", InputType.COURSE_ID);
+            courseID = getInput("Course ID [Choice " + option + "]", InputType.EXISTING_COURSE_ID);
         }
 
         allChoices.add(option, courseID);

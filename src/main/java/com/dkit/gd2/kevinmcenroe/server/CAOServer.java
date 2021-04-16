@@ -24,12 +24,31 @@ import java.util.Scanner;
 //Adapted from sample code
 public class CAOServer {
     public static void main(String[] args) {
+        DAODriver daoDriver = new DAODriver();
+
         try {
+            ServerSocket connectionSocket = new ServerSocket(CAOService.PORT_NUM);
+            while (true) {
+                Socket clientSocket = connectionSocket.accept();
+                CAOClientHandler clientHandler = new CAOClientHandler(clientSocket, daoDriver);
+                Thread worker = new Thread(clientHandler);
+                worker.start();
+            }
+
+        } catch (IOException e) {
+            System.out.println("Problem setting up the connection socket " + e.getMessage());
+        }
+
+       /* try {
+
+
+
             //Step 1: Set up a listening socket - this just listens for connections
             //Once a socket connects we create a dataSocket for the rest of the
             //communication
             ServerSocket listeningSocket = new ServerSocket(CAOService.PORT_NUM);
             Socket dataSocket = new Socket();
+            DAODriver daoDriver = new DAODriver();
 
             boolean continueRunning = true;
 
@@ -42,100 +61,36 @@ public class CAOServer {
                 //Step 3 - set up input and output streams
                 OutputStream out = dataSocket.getOutputStream();
                 //Decorator pattern
-                PrintWriter output = new PrintWriter(new OutputStreamWriter(out));
+                PrintWriter output = new PrintWriter(new OutputStreamWriter(out), true);
+                //Instead of output.flush, we can set true above
 
                 InputStream in = dataSocket.getInputStream();
                 Scanner input = new Scanner(new InputStreamReader(in));
 
                 String incomingMessage = "";
-                String response;
 
                 while (true) {
 
-                    response = null;
+                    String response = null;
 
                     //Take the information from the client
                     incomingMessage = input.nextLine();
                     System.out.println("Received message: " + incomingMessage);
 
                     String[] messageComponents = incomingMessage.split(CAOService.BREAKING_CHARACTER);
-                    //REGISTER%%$caoNumber%%$dateOfBirth%%$password
+
                     //REGISTERED if successful or REG FAILED if unsuccessful
                     if (messageComponents[0].equals(CAOService.REGISTER_COMMAND))
-                    {
-                        StringBuffer echoMessage = new StringBuffer("");
-                        MySqlStudentDAO studentDAO = new MySqlStudentDAO();
+                        response = generateRegisterResponse(daoDriver, messageComponents);
 
-                        int caoNumber = Integer.parseInt(messageComponents[1]);
-                        String dateOfBirth = messageComponents[2];
-                        String password = messageComponents[3];
+                    //LOGGED IN if successful or LOGIN FAILED is unsuccessful
+                    else if (messageComponents[0].equals(CAOService.LOGIN_COMMAND))
+                        response = generateLogInResponse(daoDriver, messageComponents);
 
-                        Student student = new Student(caoNumber, dateOfBirth, password);
-
-                        try{
-                            if(studentDAO.isRegistered(student.getCaoNumber())) {
-                                //Student of that CAO number already exists
-                                echoMessage.append(Colours.RED + "REG FAILED");
-                            }
-                            else
-                            {
-                                studentDAO.registerStudent(student);
-                                if(studentDAO.isRegistered(student.getCaoNumber()))
-                                {
-                                    echoMessage.append(Colours.GREEN + "REGISTERED");
-                                }
-                                else
-                                {
-                                    echoMessage.append(Colours.RED + "REG FAILED");
-                                }
-                            }
-                        }
-                        catch (DAOException throwables)
-                        {
-                            throwables.printStackTrace();
-                        }
-
-                        echoMessage.append(Colours.RESET);
-                        response = echoMessage.toString();
-                    }
-
-                    /*
-                    if (messageComponents[0].equals(CAOService.REGISTER_COMMAND))
-                    {
-                        StringBuffer echoMessage = new StringBuffer("");
-
-                        echoMessage.append(CAOService.REGISTER_COMMAND);
-                        echoMessage.append(CAOService.BREAKING_CHARACTER);
-
-                        if (messageComponents.length > 1) {
-                            echoMessage.append(messageComponents[1]);
-                        }
-                        for (int i = 2; i < messageComponents.length; i++) {
-                            echoMessage.append(CAOService.BREAKING_CHARACTER);
-                            echoMessage.append(messageComponents[i]);
-                        }
-                        response = echoMessage.toString();
-                    }
-                    /*else if (messageComponents[0].equals(CAOService.DAYTIME))
-                    {
-                        response = new Date().toString();
-                    }
-                    else if (messageComponents[0].equals(CAOService.STATS))
-                    {
-                        response = "This has not been implemented yet. This is for homework";
-                    }
-                    else if (messageComponents[0].equals(CAOService.END_SESSION))
-                    {
-                        response = CAOService.SESSION_TERMINATED;
-                    }
-                    else
-                    {
-                        response = CAOService.UNRECOGNISED;
-                    }*/
 
                     //Send response back
                     output.println(response);
-                    output.flush();
+                    //output.flush();           //Autoflush so this is no longer needed
                 }
             }
         } catch (IOException e) {
@@ -144,6 +99,7 @@ public class CAOServer {
             System.out.println("Shutting down. I think we need threads");
             System.exit(1);
         }
+
+             */
     }
 }
-

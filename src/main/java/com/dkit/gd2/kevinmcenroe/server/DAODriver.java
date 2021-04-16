@@ -1,5 +1,5 @@
 //Kevin McEnroe D00242092
-package com.dkit.gd2.kevinmcenroe.client;
+package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.server.*;
@@ -12,17 +12,18 @@ import java.util.List;
 // Adapted from sample code
 public class DAODriver
 {
-    public void registerStudent(Student student)
+    public boolean registerStudent(Student student)
     {
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
         try
         {
             System.out.println("\nRegistering student (CAO Number " + student.getCaoNumber() +")...");
-            IStudentDAO.registerStudent(student);
+            return IStudentDAO.registerStudent(student);
         }
         catch(DAOException daoe)
         {
             System.out.println(Colours.RED + "registerStudent() - " + daoe.getMessage() + Colours.RESET);
+            return false;
         }
     }
 

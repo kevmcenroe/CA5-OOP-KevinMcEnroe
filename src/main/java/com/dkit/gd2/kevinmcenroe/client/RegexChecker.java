@@ -5,6 +5,7 @@ package com.dkit.gd2.kevinmcenroe.client;
  */
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
+import com.dkit.gd2.kevinmcenroe.server.DAODriver;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +59,7 @@ public class RegexChecker
         }
     }
 
-    public boolean checkCourseID(String courseID){
+    public boolean checkExistingCourseID(String courseID){
         String courseIDPattern = "^[a-zA-Z0-9]*$";
         Pattern pattern = Pattern.compile((courseIDPattern));
         Matcher matcher = pattern.matcher(courseID);
@@ -71,6 +72,23 @@ public class RegexChecker
         else if(daoDriver.getCourseByCourseID(courseID) == null)
         {
             System.out.println(Colours.RED + "A course of ID \"" + courseID + "\" does not exist" + Colours.RESET);
+            return false;
+        }
+        else
+        {
+            System.out.println(Colours.GREEN + "Valid course ID" + Colours.RESET);
+            return true;
+        }
+    }
+
+    public boolean checkAnyCourseID(String courseID){
+        String courseIDPattern = "^[a-zA-Z0-9]*$";
+        Pattern pattern = Pattern.compile((courseIDPattern));
+        Matcher matcher = pattern.matcher(courseID);
+        DAODriver daoDriver = new DAODriver();
+
+        if(!matcher.matches()) {
+            System.out.println(Colours.RED + "Invalid CourseID" + Colours.RESET);
             return false;
         }
         else

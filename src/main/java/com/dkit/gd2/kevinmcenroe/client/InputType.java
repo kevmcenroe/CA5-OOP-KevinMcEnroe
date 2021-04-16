@@ -5,5 +5,6 @@ public enum InputType {
     CAO_NUMBER,
     DATE_OF_BIRTH,
     PASSWORD,
-    COURSE_ID
+    ANY_COURSE_ID,
+    EXISTING_COURSE_ID
 }

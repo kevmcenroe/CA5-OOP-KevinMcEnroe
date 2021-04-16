@@ -7,14 +7,20 @@ package com.dkit.gd2.kevinmcenroe.client;
 /* The CAOClient offers students a menu and sends messages to the server using TCP Sockets
  */
 
+import java.io.*;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Course;
 import com.dkit.gd2.kevinmcenroe.core.Student;
+import com.dkit.gd2.kevinmcenroe.server.DAODriver;
 
 public class CAOClient
 {
@@ -41,9 +47,17 @@ public class CAOClient
         {
             MenuManager.displayMainMenu();
             try{
-                DAODriver daoDriver = new DAODriver();
+                Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
 
-                String message;
+                OutputStream out = dataSocket.getOutputStream();
+                PrintWriter output = new PrintWriter(new OutputStreamWriter(out), true);
+
+                InputStream in = dataSocket.getInputStream();
+                Scanner scannerInput = new Scanner(new InputStreamReader(in));
+                Scanner keyboard = new Scanner(System.in);
+
+                String message = "";
+                String response = "";
                 String input = keyboard.nextLine();
 
                 if (input.length() != 1)
@@ -62,21 +76,25 @@ public class CAOClient
                     case REGISTER:
                         Student studentToRegister = menuManager.displayStudentMenu();
                         message = generateRegisterRequest(studentToRegister);
-                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                        daoDriver.registerStudent(studentToRegister);
-
-                        //doMainMenuLoop();
+                        //Send message and listen for response
+                        output.println(message);
+                        response = scannerInput.nextLine();
+                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
+                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
                         break;
                     case LOGIN:
                         Student studentToLogIn = menuManager.displayStudentMenu();
                         message = generateLogInRequest(studentToLogIn);
-                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                        if(daoDriver.logIn(studentToLogIn))
+                        //Send message and listen for response
+                        output.println(message);
+                        response = scannerInput.nextLine();
+                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
+                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+
+                        if (response.equals(CAOService.SUCCESSFUL_LOGIN))
                             doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
-                        else
-                            //doMainMenuLoop();
 
                         break;
                 }
@@ -89,6 +107,18 @@ public class CAOClient
             catch(IllegalArgumentException iae)
             {
                 System.out.println(Colours.RED + "Please enter a valid option" + Colours.RESET);
+            } catch(ConnectException ce)
+            {
+                System.out.println(Colours.RED + "Failed to connect to the server. Please ensure the server is running" + Colours.RESET);
+                loop = false;
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            catch(NoSuchElementException nse)
+            {
+                //This exception can occur if the mysql/xampp is not running
+                System.out.println(Colours.RED + "doMainMenuLoop - " + nse.getMessage() + "\nPlease ensure mysql is running" + Colours.RESET);
             }
         }
         System.out.println("Thanks for using the app");
@@ -105,11 +135,21 @@ public class CAOClient
             MenuManager.displayLoggedInMenu();
             try
             {
+                Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
+
+                OutputStream out = dataSocket.getOutputStream();
+                PrintWriter output = new PrintWriter(new OutputStreamWriter(out), true);
+
+                InputStream in = dataSocket.getInputStream();
+                Scanner scannerInput = new Scanner(new InputStreamReader(in));
+                Scanner keyboard = new Scanner(System.in);
+
+                String message = "";
+                String response = "";
+                String input = keyboard.nextLine();
+
                 DAODriver daoDriver = new DAODriver();
 
-                String message;
-
-                String input = keyboard.nextLine();
                 if(input.length() != 1)
                     throw new IllegalArgumentException();
                 else
@@ -128,6 +168,13 @@ public class CAOClient
                         System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
                         System.out.println("\nLogging out...");
+
+                        //Send message and listen for response
+                        output.println(message);
+                        response = scannerInput.nextLine();
+                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
+                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+
                         loggedInCAONumber = -1;
                         System.out.println(Colours.GREEN + "Logged out" + Colours.RESET);
                         loop = false;
@@ -136,7 +183,14 @@ public class CAOClient
                         String courseID = menuManager.displayGetCourseMenu();
 
                         message = generateCourseRequest(courseID);
-                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
+                        //TODO It's checking database before this line (before contacting server). Fix
+
+                        //Send message and listen for response
+                        output.println(message);
+                        response = scannerInput.nextLine();
+                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
+                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+
 
                         Course course = daoDriver.getCourseByCourseID(courseID);
                         if(course != null) {
@@ -178,6 +232,10 @@ public class CAOClient
             catch(IllegalArgumentException iae)
             {
                 System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
