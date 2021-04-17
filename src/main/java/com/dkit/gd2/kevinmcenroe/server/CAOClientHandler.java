@@ -38,7 +38,7 @@ public class CAOClientHandler implements Runnable
             while(sessionActive)
             {
                 //Protocol logic
-                //Note the line below is blocking - program execution waits here until we get a request
+                //Note the nextLine() below is blocking - program execution waits here until we get a request
                 System.out.println("Waiting for client input");
                 String request = clientInput.nextLine();
                 System.out.println("Received: " +Colours.GREEN + request + Colours.RESET);
@@ -47,13 +47,15 @@ public class CAOClientHandler implements Runnable
                 String response;
 
                 ICommand command = CommandFactory.createCommand(components[0]);
-                System.out.println("create command called");
+
                 if (command != null)
                 {
                     response = command.generateResponse(components, daoDriver);
                     if (response != null)
                     {
                         clientOutput.println(response);
+                        System.out.println("Sent: " +Colours.GREEN + response + Colours.RESET);
+
                         /*if (command instanceof ExitCommand)
                         {
                             sessionActive = false;

@@ -20,7 +20,7 @@ import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Course;
 import com.dkit.gd2.kevinmcenroe.core.Student;
-import com.dkit.gd2.kevinmcenroe.server.DAODriver;
+//import com.dkit.gd2.kevinmcenroe.server.DAODriver;
 
 public class CAOClient
 {
@@ -118,7 +118,7 @@ public class CAOClient
             catch(NoSuchElementException nse)
             {
                 //This exception can occur if the mysql/xampp is not running
-                System.out.println(Colours.RED + "doMainMenuLoop - " + nse.getMessage() + "\nPlease ensure mysql is running" + Colours.RESET);
+                System.out.println(Colours.RED + "doMainMenuLoop - " + nse.getMessage() + "\nPlease ensure MySQL is running" + Colours.RESET);
             }
         }
         System.out.println("Thanks for using the app");
@@ -148,7 +148,7 @@ public class CAOClient
                 String response = "";
                 String input = keyboard.nextLine();
 
-                DAODriver daoDriver = new DAODriver();
+               // DAODriver daoDriver = new DAODriver();
 
                 if(input.length() != 1)
                     throw new IllegalArgumentException();
@@ -164,16 +164,9 @@ public class CAOClient
                         loop = false;
                         break;
                     case LOGOUT:
-                        message = generateLogOutRequest();
-                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
-
                         System.out.println("\nLogging out...");
-
-                        //Send message and listen for response
-                        output.println(message);
-                        response = scannerInput.nextLine();
-                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
-                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+                        message = generateLogOutRequest();
+                        serverSendAndReceive(message, response, scannerInput, output);
 
                         loggedInCAONumber = -1;
                         System.out.println(Colours.GREEN + "Logged out" + Colours.RESET);
@@ -191,35 +184,37 @@ public class CAOClient
                         System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
                         System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
 
-
+                        /*
                         Course course = daoDriver.getCourseByCourseID(courseID);
                         if(course != null) {
                             System.out.println(Colours.GREEN + course + Colours.RESET);
-                        }
+                        }*/
                         break;
                     case DISPLAY_ALL_COURSES:
                         message = generateAllCoursesRequest();
-                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
+                        serverSendAndReceive(message, response, scannerInput, output);
+
+                        /*
                         List<Course> allCourses = daoDriver.getAllCourses();
                         if(allCourses != null){
                             for(Course foundCourse : allCourses)
                                 System.out.println(Colours.GREEN + foundCourse + Colours.RESET);
-                        }
+                        }*/
                         break;
                     case DISPLAY_CURRENT_CHOICES:
                         message = generateCurrentChoicesRequest(loggedInCAONumber);
-                        System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
 
-                        menuManager.displayCurrentChoices(loggedInCAONumber);
+                        //menuManager.displayCurrentChoices(loggedInCAONumber);
+
+                        serverSendAndReceive(message, response, scannerInput, output);
                         break;
                     case UPDATE_CURRENT_CHOICES:
                         List<String> newChoices = menuManager.displayUpdateCourseChoicesMenu(loggedInCAONumber);
 
                         if(newChoices != null) {
                             message = generateUpdateChoicesRequest(loggedInCAONumber, newChoices);
-                            System.out.println("Generated: " + Colours.GREEN + message + Colours.RESET);
-                            daoDriver.updateCourseChoices(loggedInCAONumber, newChoices);
+                            serverSendAndReceive(message, response, scannerInput, output);
                         }
                         break; // Exit the loop
                 }
@@ -238,6 +233,14 @@ public class CAOClient
                 e.printStackTrace();
             }
         }
+    }
+
+    private void serverSendAndReceive(String message, String response, Scanner scannerInput, PrintWriter output){
+        //Send message and listen for response
+        output.println(message);
+        response = scannerInput.nextLine();
+        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
+        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
     }
 
     private String generateRegisterRequest(Student student){

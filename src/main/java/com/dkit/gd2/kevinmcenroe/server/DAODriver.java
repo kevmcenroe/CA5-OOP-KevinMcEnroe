@@ -104,21 +104,23 @@ public class DAODriver
         }
     }
 
-    public void updateCourseChoices(int caoNumber, List<String> newChoicesByID){
+    public boolean updateCourseChoices(int caoNumber, List<String> newChoicesByID){
         ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
         try
         {
             if(newChoicesByID != null) {
                 System.out.println("\nUpdating course choices (CAO Number " + caoNumber + ")...");
-                ICourseChoiceDAO.updateCourseChoices(caoNumber, newChoicesByID);
+                return ICourseChoiceDAO.updateCourseChoices(caoNumber, newChoicesByID);
             }
             else{
                 System.out.println(Colours.RED + "updateCourseChoices() - newChoicesByID is null" + Colours.RESET);
+                return false;
             }
         }
         catch(DAOException daoe)
         {
             System.out.println(Colours.RED + "updateCourseChoices() - " + daoe.getMessage() + Colours.RESET);
+            return false;
         }
     }
 }
