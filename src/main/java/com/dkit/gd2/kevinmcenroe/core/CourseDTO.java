@@ -4,7 +4,7 @@ package com.dkit.gd2.kevinmcenroe.core;
 import java.util.Objects;
 
 //Adapted from CA4
-public class Course {
+public class CourseDTO {
 
     private String courseId;
     private String level;
@@ -12,7 +12,7 @@ public class Course {
     private String institution;
 
     // Copy Constructor
-    public Course(Course course) {
+    public CourseDTO(CourseDTO course) {
         this.courseId = course.courseId;
         this.level = course.level;
         this.title = course.title;
@@ -20,7 +20,7 @@ public class Course {
     }
 
     // Constructor
-    public Course(String courseId, String level, String title, String institution) {
+    public CourseDTO(String courseId, String level, String title, String institution) {
         this.courseId = courseId;
         this.level = level;
         this.title = title;
@@ -62,7 +62,7 @@ public class Course {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Course course = (Course) o;
+        CourseDTO course = (CourseDTO) o;
         return courseId.equals(course.courseId) && level.equals(course.level) && title.equals(course.title) && institution.equals(course.institution);
     }
 

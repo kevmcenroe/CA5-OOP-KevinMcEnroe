@@ -14,7 +14,7 @@ import java.util.*;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.core.Student;
+import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
 
 public class CAOClient
 {
@@ -66,12 +66,12 @@ public class CAOClient
                         loop = false;
                         break;
                     case REGISTER:
-                        Student studentToRegister = menuManager.displayStudentMenu();
+                        StudentDTO studentToRegister = menuManager.displayStudentMenu();
                         message = generateRegisterRequest(studentToRegister);
                         serverSendAndReceive(message, scannerInput, output);
                         break;
                     case LOGIN:
-                        Student studentToLogIn = menuManager.displayStudentMenu();
+                        StudentDTO studentToLogIn = menuManager.displayStudentMenu();
                         message = generateLogInRequest(studentToLogIn);
                         response = serverSendAndReceive(message, scannerInput, output);
 
@@ -276,7 +276,7 @@ public class CAOClient
         return response;
     }
 
-    private String generateRegisterRequest(Student student){
+    private String generateRegisterRequest(StudentDTO student){
         StringBuilder message = new StringBuilder(CAOService.REGISTER_COMMAND);
         message.append(CAOService.BREAKING_CHARACTER);
 
@@ -293,7 +293,7 @@ public class CAOClient
         return message.toString();
     }
 
-    private String generateLogInRequest(Student student){
+    private String generateLogInRequest(StudentDTO student){
         StringBuilder message = new StringBuilder(CAOService.LOGIN_COMMAND);
         message.append(CAOService.BREAKING_CHARACTER);
 

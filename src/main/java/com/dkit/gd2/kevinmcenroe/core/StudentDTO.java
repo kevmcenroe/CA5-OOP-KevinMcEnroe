@@ -4,12 +4,12 @@ package com.dkit.gd2.kevinmcenroe.core;
 import java.util.Objects;
 
 ////Adapted from CA4
-public class Student {
+public class StudentDTO {
     private int caoNumber;
     private String dateOfBirth;
     private String password;
 
-    public Student(Student student) {
+    public StudentDTO(StudentDTO student) {
         this.caoNumber = student.getCaoNumber();
         this.dateOfBirth = student.getDayOfBirth();
         this.password = student.getPassword();
@@ -19,7 +19,7 @@ public class Student {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Student student = (Student) o;
+        StudentDTO student = (StudentDTO) o;
         return caoNumber == student.caoNumber && dateOfBirth.equals(student.dateOfBirth) && password.equals(student.password);
     }
 
@@ -29,7 +29,7 @@ public class Student {
     }
 
     // Constructor
-    public Student(int caoNumber, String dateOfBirth, String password) {
+    public StudentDTO(int caoNumber, String dateOfBirth, String password) {
         this.caoNumber = caoNumber;
         this.dateOfBirth = dateOfBirth;
         this.password = password;

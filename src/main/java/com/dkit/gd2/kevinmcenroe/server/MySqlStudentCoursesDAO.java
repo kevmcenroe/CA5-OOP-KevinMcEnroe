@@ -2,7 +2,7 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.core.Course;
+import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOInterface{
+public class MySqlStudentCoursesDAO extends MySqlDAO implements ICourseChoiceDAOInterface{
     @Override
     public List<String> getCourseChoicesByCAONumber(int caoNumber) throws DAOException {
         Connection con = null;
@@ -87,7 +87,7 @@ public class MySqlCourseChoiceDAO extends MySqlDAO implements ICourseChoiceDAOIn
                 clearChoicesByCAONumber(caoNumber);
 
                 for (String courseID : newChoicesByID) {
-                    Course course = courseDAO.getCourseByID(courseID);
+                    CourseDTO course = courseDAO.getCourseByID(courseID);
                     if (course != null) {
                         insertCourseChoiceByID(caoNumber, courseID);
                     } else {

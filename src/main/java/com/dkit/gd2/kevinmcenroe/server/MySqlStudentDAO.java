@@ -2,7 +2,7 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.core.Student;
+import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 {
     @Override
-    public boolean registerStudent(Student student) throws DAOException {
+    public boolean registerStudent(StudentDTO student) throws DAOException {
         int caoNumber = student.getCaoNumber();
         String dateOfBirth = student.getDayOfBirth();
         String password = student.getPassword();
@@ -101,7 +101,7 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
     }
 
     @Override
-    public boolean logInStudent(Student student) throws DAOException {
+    public boolean logInStudent(StudentDTO student) throws DAOException {
         boolean invalidDetails = false;
 
         int caoNumber = student.getCaoNumber();

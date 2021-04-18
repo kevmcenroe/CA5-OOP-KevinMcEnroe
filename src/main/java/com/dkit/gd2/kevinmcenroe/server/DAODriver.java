@@ -2,8 +2,8 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.core.Student;
-import com.dkit.gd2.kevinmcenroe.core.Course;
+import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
+import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 // Adapted from sample code
 public class DAODriver
 {
-    public boolean registerStudent(Student student)
+    public boolean registerStudent(StudentDTO student)
     {
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
         try
@@ -26,7 +26,7 @@ public class DAODriver
         }
     }
 
-    public boolean logIn(Student student)
+    public boolean logIn(StudentDTO student)
     {
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
         try
@@ -42,7 +42,7 @@ public class DAODriver
         }
     }
 
-    public Course getCourseByCourseID(String courseID){
+    public CourseDTO getCourseByCourseID(String courseID){
         ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
         try
         {
@@ -56,7 +56,7 @@ public class DAODriver
         }
     }
 
-    public List<Course> getAllCourses(){
+    public List<CourseDTO> getAllCourses(){
         ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
         try
         {
@@ -74,10 +74,10 @@ public class DAODriver
         ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
         try
         {
-            List<Course> allCourses = ICourseDAO.getAllCourses();
+            List<CourseDTO> allCourses = ICourseDAO.getAllCourses();
             List<String> allCourseIDs = new ArrayList<>();
 
-            for(Course course : allCourses)
+            for(CourseDTO course : allCourses)
             {
                 allCourseIDs.add(course.getCourseId());
             }
@@ -91,7 +91,7 @@ public class DAODriver
     }
 
     public List<String> getCourseChoices(int caoNumber){
-        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
+        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlStudentCoursesDAO();
         try
         {
             System.out.println("\nGetting course choices (CAO Number " + caoNumber +")...");
@@ -105,7 +105,7 @@ public class DAODriver
     }
 
     public boolean updateCourseChoices(int caoNumber, List<String> newChoicesByID){
-        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlCourseChoiceDAO();
+        ICourseChoiceDAOInterface ICourseChoiceDAO = new MySqlStudentCoursesDAO();
         try
         {
             if(newChoicesByID != null) {

@@ -2,7 +2,7 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.core.Course;
+import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
     @Override
-    public Course getCourseByID(String courseID) throws DAOException {
+    public CourseDTO getCourseByID(String courseID) throws DAOException {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -35,7 +35,7 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                 String gotTitle = rs.getString("title");
                 String gotInstitution = rs.getString("institution");
 
-                return new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
+                return new CourseDTO(gotCourseID, gotLevel, gotTitle, gotInstitution);
             }
             else
             {
@@ -68,11 +68,11 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
     }
 
     @Override
-    public List<Course> getAllCourses() throws DAOException {
+    public List<CourseDTO> getAllCourses() throws DAOException {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Course> courses = new ArrayList<>();
+        List<CourseDTO> courses = new ArrayList<>();
 
         try
         {
@@ -91,7 +91,7 @@ public class MySqlCourseDAO extends MySqlDAO implements ICourseDAOInterface{
                     String gotTitle = rs.getString("title");
                     String gotInstitution = rs.getString("institution");
 
-                    Course matchingCourse = new Course(gotCourseID, gotLevel, gotTitle, gotInstitution);
+                    CourseDTO matchingCourse = new CourseDTO(gotCourseID, gotLevel, gotTitle, gotInstitution);
                     courses.add(matchingCourse);
                 }
                 return courses;

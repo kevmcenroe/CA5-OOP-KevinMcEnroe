@@ -2,7 +2,7 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
-import com.dkit.gd2.kevinmcenroe.core.Course;
+import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class DisplayAllCoursesCommand implements ICommand {
             
             for(String courseID : gotCourseIDs)
             {
-                Course course = daoDriver.getCourseByCourseID(courseID);
+                CourseDTO course = daoDriver.getCourseByCourseID(courseID);
                 response.append(course.getCourseId());
                 response.append(CAOService.BREAKING_CHARACTER);
                 response.append(course.getLevel());

@@ -2,12 +2,12 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
-import com.dkit.gd2.kevinmcenroe.core.Course;
+import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
 
 public class DisplayCourseCommand implements ICommand {
     @Override
     public String generateResponse(String[] components, DAODriver daoDriver) {
-        Course gotCourse = daoDriver.getCourseByCourseID(components[1]);
+        CourseDTO gotCourse = daoDriver.getCourseByCourseID(components[1]);
         if (gotCourse == null)
             return CAOService.FAILED_DISPLAY_COURSE;
         else {

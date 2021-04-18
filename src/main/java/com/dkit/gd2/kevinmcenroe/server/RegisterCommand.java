@@ -2,7 +2,7 @@
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
-import com.dkit.gd2.kevinmcenroe.core.Student;
+import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
 
 public class RegisterCommand implements ICommand {
     @Override
@@ -11,7 +11,7 @@ public class RegisterCommand implements ICommand {
             int caoNumber = Integer.parseInt(components[1]);
             String dateOfBirth = components[2];
             String password = components[3];
-            Student student = new Student(caoNumber, dateOfBirth, password);
+            StudentDTO student = new StudentDTO(caoNumber, dateOfBirth, password);
 
             if(daoDriver.registerStudent(student))
                 return CAOService.SUCCESSFUL_REGISTER;

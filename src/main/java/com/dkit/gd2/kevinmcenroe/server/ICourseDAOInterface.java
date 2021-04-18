@@ -1,12 +1,12 @@
 //Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
-import com.dkit.gd2.kevinmcenroe.core.Course;
+import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
 
 import java.util.List;
 
 public interface ICourseDAOInterface
 {
-    Course getCourseByID(String courseID) throws DAOException;
-    List<Course> getAllCourses() throws DAOException;
+    CourseDTO getCourseByID(String courseID) throws DAOException;
+    List<CourseDTO> getAllCourses() throws DAOException;
 }

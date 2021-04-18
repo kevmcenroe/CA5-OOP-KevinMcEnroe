@@ -2,8 +2,7 @@
 package com.dkit.gd2.kevinmcenroe.client;
 
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.core.Student;
-import com.dkit.gd2.kevinmcenroe.server.DAODriver;
+import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,12 +74,12 @@ public class MenuManager {
         System.out.println("Enter the corresponding number to select an option");
     }
 
-    public Student displayStudentMenu(){
+    public StudentDTO displayStudentMenu(){
         int caoNumber = Integer.parseInt(Objects.requireNonNull(getInput("CAO Number", InputType.CAO_NUMBER)));
         String dateOfBirth = getInput("Date of Birth in YYYY-MM-DD format", InputType.DATE_OF_BIRTH);
         String password = getInput("Password (Minimum 8 characters)", InputType.PASSWORD);
 
-        return new Student(caoNumber, dateOfBirth, password);
+        return new StudentDTO(caoNumber, dateOfBirth, password);
     }
 
     public String displayGetCourseMenu(){
@@ -89,22 +88,11 @@ public class MenuManager {
 
     public List<String> displayUpdateCourseChoicesMenu(int caoNumber, List<String> allAvailableCourseIDs){
         List<String> newChoices = new ArrayList<>();
-
         System.out.println("Enter your 10 updated course choices");
 
         for(int i = 1; i<11; i++){
             String courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
-
-            while(!allAvailableCourseIDs.contains(courseID) && !courseID.equals("X")) {
-                System.out.println(Colours.RED + "Course ID \"" + courseID + "\" does not exist" + Colours.RESET);
-                courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
-            }
-
-            while(newChoices.contains(courseID))
-            {
-                System.out.println(Colours.RED + "You have already submitted course ID \"" + courseID + "\" as a choice" + Colours.RESET);
-                courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
-            }
+            courseID = verifyCourseID(allAvailableCourseIDs, courseID, newChoices, i);
 
             if(courseID.equals("X")) {
                 System.out.println("Saved and sent course choices");
@@ -113,8 +101,22 @@ public class MenuManager {
             else
                 newChoices.add(courseID);
         }
-
         return  newChoices;
+    }
+
+    private String verifyCourseID(List<String> allAvailableCourseIDs, String courseID, List<String> newChoices, int i){
+        while(!allAvailableCourseIDs.contains(courseID) && !courseID.equals("X")) {
+            System.out.println(Colours.RED + "Course ID \"" + courseID + "\" does not exist" + Colours.RESET);
+            courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
+        }
+
+        while(newChoices.contains(courseID))
+        {
+            System.out.println(Colours.RED + "You have already submitted course ID \"" + courseID + "\" as a choice" + Colours.RESET);
+            courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
+        }
+
+        return courseID;
     }
 
     /* The following code was redeveloped to maintain client/server encapsulation and avoid DAODriver access from Client

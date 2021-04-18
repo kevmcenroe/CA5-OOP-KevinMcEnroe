@@ -1,8 +1,8 @@
 //Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.client;
 
-import com.dkit.gd2.kevinmcenroe.core.Course;
-import com.dkit.gd2.kevinmcenroe.core.Student;
+import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
+import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
 import com.dkit.gd2.kevinmcenroe.server.*;
 import junit.framework.TestCase;
 
@@ -12,7 +12,7 @@ import java.util.List;
 public class DAODriverTest extends TestCase {
 
     public void testRegisterStudent() throws DAOException {
-        Student student = new Student(87654321, "1999-01-01", "mypassword");
+        StudentDTO student = new StudentDTO(87654321, "1999-01-01", "mypassword");
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
 
         IStudentDAO.registerStudent(student);
@@ -22,7 +22,7 @@ public class DAODriverTest extends TestCase {
     }
 
     public void testIsRegistered() throws DAOException {
-        Student regStudent = new Student(87654321, "2000-02-02", "password2");
+        StudentDTO regStudent = new StudentDTO(87654321, "2000-02-02", "password2");
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
         IStudentDAO.registerStudent(regStudent);
 
@@ -30,7 +30,7 @@ public class DAODriverTest extends TestCase {
         boolean validLogIn = IStudentDAO.logInStudent(regStudent);
         assertEquals(registered, validLogIn);
 
-        Student unregStudent = new Student(99999999, "1999-09-09", "password9");
+        StudentDTO unregStudent = new StudentDTO(99999999, "1999-09-09", "password9");
         boolean unregistered = IStudentDAO.isRegistered(unregStudent.getCaoNumber());
         boolean invalidLogIn = IStudentDAO.logInStudent(unregStudent);
         assertEquals(unregistered, invalidLogIn);
@@ -43,47 +43,47 @@ public class DAODriverTest extends TestCase {
         //The test requires that a course of this ID exist in the database
         //This courseID can be changed to match any other existing course
 
-        Course gotCourse = ICourseDAO.getCourseByID(courseID);
+        CourseDTO gotCourse = ICourseDAO.getCourseByID(courseID);
         assertEquals(gotCourse.getCourseId(), courseID);
     }
 
     public void testLogInStudent() throws DAOException {
-        Student regStudent = new Student(99999991, "2000-02-02", "password2");
+        StudentDTO regStudent = new StudentDTO(99999991, "2000-02-02", "password2");
         IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
         IStudentDAO.registerStudent(regStudent);
 
         boolean validLogIn = IStudentDAO.logInStudent(regStudent);
         assertTrue(validLogIn);
 
-        Student unregStudent = new Student(99999992, "1999-09-09", "password9");
+        StudentDTO unregStudent = new StudentDTO(99999992, "1999-09-09", "password9");
         boolean invalidLogIn = IStudentDAO.logInStudent(unregStudent);
         assertFalse(invalidLogIn);
     }
 
     public void testGetAllCourses() throws DAOException {
         //Should additional courses be added to the database, this test should be updated to reflect that
-        List<Course> allCourses = new ArrayList<>();
-        Course courseAA = new Course("DK001", "8", "Accounting and Finance", "DKIT");
-        Course courseAB = new Course("DK002", "8", "Business Studies", "DKIT");
-        Course courseAC = new Course("DK003", "8", "Computing in Games Development", "DKIT");
-        Course courseAD = new Course("DK004", "8", "Computing in Software Development", "DKIT");
-        Course courseAE = new Course("DK005", "8", "Augmented and Virtual Reality", "DKIT");
-        Course courseAF = new Course("DK006", "8", "Mathematics and Data Science", "DKIT");
-        Course courseAG = new Course("DK007", "8", "Computing Systems and Operations", "DKIT");
-        Course courseAH = new Course("DK008", "8", "Building Surveying", "DKIT");
-        Course courseAI = new Course("DK009", "7", "Creative Media", "DKIT");
-        Course courseAJ = new Course("DK010", "7", "Music", "DKIT");
+        List<CourseDTO> allCourses = new ArrayList<>();
+        CourseDTO courseAA = new CourseDTO("DK001", "8", "Accounting and Finance", "DKIT");
+        CourseDTO courseAB = new CourseDTO("DK002", "8", "Business Studies", "DKIT");
+        CourseDTO courseAC = new CourseDTO("DK003", "8", "Computing in Games Development", "DKIT");
+        CourseDTO courseAD = new CourseDTO("DK004", "8", "Computing in Software Development", "DKIT");
+        CourseDTO courseAE = new CourseDTO("DK005", "8", "Augmented and Virtual Reality", "DKIT");
+        CourseDTO courseAF = new CourseDTO("DK006", "8", "Mathematics and Data Science", "DKIT");
+        CourseDTO courseAG = new CourseDTO("DK007", "8", "Computing Systems and Operations", "DKIT");
+        CourseDTO courseAH = new CourseDTO("DK008", "8", "Building Surveying", "DKIT");
+        CourseDTO courseAI = new CourseDTO("DK009", "7", "Creative Media", "DKIT");
+        CourseDTO courseAJ = new CourseDTO("DK010", "7", "Music", "DKIT");
 
-        Course courseBA = new Course("TC001", "8", "Acting", "TCD");
-        Course courseBB = new Course("TC002", "8", "Ancient History", "TCD");
-        Course courseBC = new Course("TC003", "8", "Business Studies and French", "TCD");
-        Course courseBD = new Course("TC004", "8", "Business Studies and German", "TCD");
-        Course courseBE = new Course("TC005", "8", "Business Studies and Polish", "TCD");
-        Course courseBF = new Course("TC006", "8", "Classical Civilisation", "TCD");
-        Course courseBG = new Course("TC007", "7", "Classical Languages", "TCD");
-        Course courseBH = new Course("TC008", "7", "Clinical Speach and Language", "TCD");
-        Course courseBI = new Course("TC009", "7", "English Studies", "TCD");
-        Course courseBJ = new Course("TC010", "7", "German", "TCD");
+        CourseDTO courseBA = new CourseDTO("TC001", "8", "Acting", "TCD");
+        CourseDTO courseBB = new CourseDTO("TC002", "8", "Ancient History", "TCD");
+        CourseDTO courseBC = new CourseDTO("TC003", "8", "Business Studies and French", "TCD");
+        CourseDTO courseBD = new CourseDTO("TC004", "8", "Business Studies and German", "TCD");
+        CourseDTO courseBE = new CourseDTO("TC005", "8", "Business Studies and Polish", "TCD");
+        CourseDTO courseBF = new CourseDTO("TC006", "8", "Classical Civilisation", "TCD");
+        CourseDTO courseBG = new CourseDTO("TC007", "7", "Classical Languages", "TCD");
+        CourseDTO courseBH = new CourseDTO("TC008", "7", "Clinical Speach and Language", "TCD");
+        CourseDTO courseBI = new CourseDTO("TC009", "7", "English Studies", "TCD");
+        CourseDTO courseBJ = new CourseDTO("TC010", "7", "German", "TCD");
 
         allCourses.add(courseAA);
         allCourses.add(courseAB);
@@ -108,7 +108,7 @@ public class DAODriverTest extends TestCase {
         allCourses.add(courseBJ);
 
         DAODriver daoDriver = new DAODriver();
-        List<Course> gotCourses = daoDriver.getAllCourses();
+        List<CourseDTO> gotCourses = daoDriver.getAllCourses();
         boolean equals = allCourses.equals(gotCourses);
 
         assertTrue(equals);
