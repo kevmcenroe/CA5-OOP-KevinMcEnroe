@@ -102,7 +102,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
 
     @Override
     public boolean logInStudent(StudentDTO student) throws DAOException {
-        boolean invalidDetails = false;
 
         int caoNumber = student.getCaoNumber();
         String dateOfBirth = student.getDayOfBirth();
@@ -130,8 +129,6 @@ public class MySqlStudentDAO extends MySqlDAO implements IStudentDAOInterface
             }
             else
             {
-                invalidDetails = true;
-                //System.out.println(Colours.RED + "Invalid log in details" + Colours.RESET);
                 return false;
             }
         }
