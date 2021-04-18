@@ -1,3 +1,4 @@
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
@@ -11,9 +12,8 @@ public class DisplayAllCoursesCommand implements ICommand {
         List<String> gotCourseIDs = daoDriver.getAllCourseIDs();
         if (gotCourseIDs == null)
             return CAOService.FAILED_DISPLAY_ALL_COURSES;
-
         else {
-            //This approach was used for modularity and easy editing of response
+            //This approach was taken for modularity and ease of editing responses
             StringBuilder response = new StringBuilder();
             response.append(CAOService.SUCCESSFUL_DISPLAY_ALL_COURSES);
             response.append(CAOService.BREAKING_CHARACTER);
@@ -30,7 +30,6 @@ public class DisplayAllCoursesCommand implements ICommand {
                 response.append(course.getInstitution());
                 response.append(CAOService.COURSE_SEPARATOR);
             }
-
 
             return response.toString();
         }

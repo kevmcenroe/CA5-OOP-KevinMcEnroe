@@ -8,14 +8,10 @@ package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
-import com.dkit.gd2.kevinmcenroe.core.Student;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 //Adapted from sample code
 public class CAOServer {

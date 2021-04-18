@@ -4,7 +4,6 @@ package com.dkit.gd2.kevinmcenroe.client;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Student;
 import com.dkit.gd2.kevinmcenroe.server.DAODriver;
-import jdk.swing.interop.SwingInterOpUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +17,8 @@ public class MenuManager {
     private String getInput(String request, InputType inputType) {
         System.out.print("Please enter " + request + " :>");
         RegexChecker regexChecker = new RegexChecker();
-
         String input = keyboard.nextLine();
+
         switch (inputType)
         {
             case CAO_NUMBER:
@@ -118,6 +117,20 @@ public class MenuManager {
         return  newChoices;
     }
 
+    /* The following code was redeveloped to maintain client/server encapsulation and avoid DAODriver access from Client
+
+    private List<String> getUnselectedCourses(DAODriver daoDriver, List<String> choices){
+        List<String> allCourses = daoDriver.getAllCourseIDs();
+        List<String> unselected = new ArrayList<>();
+
+        for(String course : allCourses){
+            if(!choices.contains(course))
+                unselected.add(course);
+        }
+
+        return unselected;
+    }
+
     public void displayCurrentChoices(int caoNumber){
         DAODriver daoDriver = new DAODriver();
         List<String> allChoices = daoDriver.getCourseChoices(caoNumber);
@@ -164,17 +177,5 @@ public class MenuManager {
         allChoices.add(option, courseID);
         allChoices.remove(option+1);
         return allChoices;
-    }
-
-    private List<String> getUnselectedCourses(DAODriver daoDriver, List<String> choices){
-        List<String> allCourses = daoDriver.getAllCourseIDs();
-        List<String> unselected = new ArrayList<>();
-
-        for(String course : allCourses){
-            if(!choices.contains(course))
-                unselected.add(course);
-        }
-
-        return unselected;
-    }
+    }*/
 }

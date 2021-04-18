@@ -22,9 +22,7 @@ public class RegexChecker
             return false;
         }
         else
-        {
             return true;
-        }
     }
 
     public boolean checkDateOfBirth(String dateOfBirth){
@@ -38,9 +36,7 @@ public class RegexChecker
             return false;
         }
         else
-        {
             return true;
-        }
     }
 
     public boolean checkPassword(String password){
@@ -54,31 +50,7 @@ public class RegexChecker
             return false;
         }
         else
-        {
             return true;
-        }
-    }
-
-    public boolean checkExistingCourseID(String courseID){
-        String courseIDPattern = "^[a-zA-Z0-9]*$";
-        Pattern pattern = Pattern.compile((courseIDPattern));
-        Matcher matcher = pattern.matcher(courseID);
-        DAODriver daoDriver = new DAODriver();
-
-        if(!matcher.matches()) {
-            System.out.println(Colours.RED + "Invalid CourseID" + Colours.RESET);
-            return false;
-        }
-        else if(daoDriver.getCourseByCourseID(courseID) == null)
-        {
-            System.out.println(Colours.RED + "A course of ID \"" + courseID + "\" does not exist" + Colours.RESET);
-            return false;
-        }
-        else
-        {
-            System.out.println(Colours.GREEN + "Valid course ID" + Colours.RESET);
-            return true;
-        }
     }
 
     public boolean checkAnyCourseID(String courseID){

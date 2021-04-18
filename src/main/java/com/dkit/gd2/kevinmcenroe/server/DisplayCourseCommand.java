@@ -1,3 +1,4 @@
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
@@ -9,9 +10,8 @@ public class DisplayCourseCommand implements ICommand {
         Course gotCourse = daoDriver.getCourseByCourseID(components[1]);
         if (gotCourse == null)
             return CAOService.FAILED_DISPLAY_COURSE;
-
         else {
-            //This approach was used for modularity and easy editing of response
+            //This approach was taken for modularity and ease of editing responses
             StringBuilder response = new StringBuilder();
 
             response.append(gotCourse.getCourseId());

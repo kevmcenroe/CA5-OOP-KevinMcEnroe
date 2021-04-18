@@ -1,22 +1,21 @@
+//Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.server;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
-import com.dkit.gd2.kevinmcenroe.core.Course;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UpdateChoicesCommand implements ICommand {
     @Override
     public String generateResponse(String[] components, DAODriver daoDriver) {
-        //boolean choicesUpdated = daoDriver.updateCourseChoices();
         int caoNumber = Integer.parseInt(components[1]);
         List<String> choices = new ArrayList<>();
 
         if(components.length > 2)
         {
-            for (int i = 2; i < components.length; i++)
-                choices.add(components[i]);
+            choices.addAll(Arrays.asList(components).subList(2, components.length));
         }
 
         if(choices.size() > 0) {

@@ -11,8 +11,6 @@ import com.dkit.gd2.kevinmcenroe.core.Colours;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
 public class CAOClientHandler implements Runnable
@@ -37,12 +35,11 @@ public class CAOClientHandler implements Runnable
             boolean sessionActive = true;
             while(sessionActive)
             {
-                //Protocol logic
-                //Note the nextLine() below is blocking - program execution waits here until we get a request
+                //NextLine() is blocking so the program execution waits there until it receives a request
                 System.out.println("Waiting for client input");
                 String request = clientInput.nextLine();
-                System.out.println("Received: " +Colours.GREEN + request + Colours.RESET);
 
+                System.out.println("Received: " +Colours.GREEN + request + Colours.RESET);
                 String[] components = request.split(CAOService.BREAKING_CHARACTER);
                 String response;
 
@@ -55,11 +52,6 @@ public class CAOClientHandler implements Runnable
                     {
                         clientOutput.println(response);
                         System.out.println("Sent: " +Colours.GREEN + response + Colours.RESET);
-
-                        /*if (command instanceof ExitCommand)
-                        {
-                            sessionActive = false;
-                        }*/
                     }
                 }
             }
