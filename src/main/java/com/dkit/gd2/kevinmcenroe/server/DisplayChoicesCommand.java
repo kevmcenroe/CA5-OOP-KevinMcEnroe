@@ -20,14 +20,8 @@ public class DisplayChoicesCommand implements ICommand {
 
             for(String courseID : gotChoices)
             {
-                Course course = daoDriver.getCourseByCourseID(courseID);
-                response.append(course.getCourseId());
+                response.append(courseID);
                 response.append(CAOService.BREAKING_CHARACTER);
-                response.append(course.getLevel());
-                response.append(CAOService.BREAKING_CHARACTER);
-                response.append(course.getTitle());
-                response.append(CAOService.BREAKING_CHARACTER);
-                response.append(course.getInstitution());
             }
 
 

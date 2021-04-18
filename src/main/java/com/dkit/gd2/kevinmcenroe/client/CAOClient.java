@@ -166,36 +166,24 @@ public class CAOClient
                         String courseID = menuManager.displayGetCourseMenu();
 
                         message = generateCourseRequest(courseID);
-                        //TODO It's checking database before this line (before contacting server). Fix
 
-                        serverSendAndReceive(message, response, scannerInput, output);
-                        //TODO Maybe read the response and break it up to display the course
-
-                        /*
-                        Course course = daoDriver.getCourseByCourseID(courseID);
-                        if(course != null) {
-                            System.out.println(Colours.GREEN + course + Colours.RESET);
-                        }*/
+                        response = serverSendAndReceive(message, response, scannerInput, output);
+                        displayParsedCourse(response);
                         break;
                     case DISPLAY_ALL_COURSES:
                         message = generateAllCoursesRequest();
 
                         response = serverSendAndReceive(message, response, scannerInput, output);
 
-                        parseResponseAllCourses(response);
-                        /*
-                        List<Course> allCourses = daoDriver.getAllCourses();
-                        if(allCourses != null){
-                            for(Course foundCourse : allCourses)
-                                System.out.println(Colours.GREEN + foundCourse + Colours.RESET);
-                        }*/
+                        displayParsedAllCourses(response);
                         break;
                     case DISPLAY_CURRENT_CHOICES:
                         message = generateCurrentChoicesRequest(loggedInCAONumber);
 
                         //menuManager.displayCurrentChoices(loggedInCAONumber);
 
-                        serverSendAndReceive(message, response, scannerInput, output);
+                        response = serverSendAndReceive(message, response, scannerInput, output);
+                        displayParsedCurrentChoices(response);
                         break;
                     case UPDATE_CURRENT_CHOICES:
                         List<String> newChoices = menuManager.displayUpdateCourseChoicesMenu(loggedInCAONumber);
@@ -221,24 +209,57 @@ public class CAOClient
         }
     }
 
-    private void parseResponseAllCourses(String response){
-        String[] courseComponents = response.split(CAOService.COURSE_SEPARATOR);
-        System.out.println("Displaying all courses...");
+    private void displayParsedCourse(String response){
+        if(!response.equals(CAOService.FAILED_DISPLAY_COURSE)) {
+            String[] fields = response.split(CAOService.BREAKING_CHARACTER);
+            System.out.println("Displaying course...");
 
-        int courseIndex = 0;
-        for (String course : courseComponents) {
-            String[] fields = course.split(CAOService.BREAKING_CHARACTER);
-            int i = 0;
-            if(courseIndex == 0)
-                i++;
-            String courseID = fields[i];
-            String level = fields[i+1];
-            String title = fields[i+2];
-            String institution = fields[i+3];
+            String courseID = fields[0];
+            String level = fields[1];
+            String title = fields[2];
+            String institution = fields[3];
 
             System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
-            courseIndex++;
         }
+        else
+            System.out.println(Colours.RED + "A course of given course ID does not exist" + Colours.RESET);
+    }
+
+    private void displayParsedAllCourses(String response){
+        if(!response.equals(CAOService.FAILED_DISPLAY_CHOICES)) {
+            String[] courseComponents = response.split(CAOService.COURSE_SEPARATOR);
+            System.out.println("Displaying current choices...");
+
+            int courseIndex = 0;
+            for (String course : courseComponents) {
+                String[] fields = course.split(CAOService.BREAKING_CHARACTER);
+                int i = 0;
+                if (courseIndex == 0)
+                    i++;
+                String courseID = fields[i];
+                String level = fields[i + 1];
+                String title = fields[i + 2];
+                String institution = fields[i + 3];
+
+                System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
+                courseIndex++;
+            }
+        }
+        else
+            System.out.println(Colours.RED + "No choices registered for that CAO number" + Colours.RESET);
+    }
+
+    private void displayParsedCurrentChoices(String response){
+        String[] choices = response.split(CAOService.BREAKING_CHARACTER);
+        System.out.println("Displaying current choices...");
+
+        int choiceIndex = 0;
+        for (String choice : choices) {
+            if(choiceIndex != 0)
+                System.out.print(Colours.GREEN + "[#" + choiceIndex + "] " + choice + " " + Colours.RESET);
+            choiceIndex++;
+        }
+        System.out.println();
     }
 
     private String serverSendAndReceive(String message, String response, Scanner scannerInput, PrintWriter output){
