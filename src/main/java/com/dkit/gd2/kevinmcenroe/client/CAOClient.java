@@ -77,21 +77,13 @@ public class CAOClient
                         Student studentToRegister = menuManager.displayStudentMenu();
                         message = generateRegisterRequest(studentToRegister);
 
-                        //Send message and listen for response
-                        output.println(message);
-                        response = scannerInput.nextLine();
-                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
-                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+                        serverSendAndReceive(message, response, scannerInput, output);
                         break;
                     case LOGIN:
                         Student studentToLogIn = menuManager.displayStudentMenu();
                         message = generateLogInRequest(studentToLogIn);
 
-                        //Send message and listen for response
-                        output.println(message);
-                        response = scannerInput.nextLine();
-                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
-                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+                        response = serverSendAndReceive(message, response, scannerInput, output);
 
                         if (response.equals(CAOService.SUCCESSFUL_LOGIN))
                             doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
@@ -148,8 +140,6 @@ public class CAOClient
                 String response = "";
                 String input = keyboard.nextLine();
 
-               // DAODriver daoDriver = new DAODriver();
-
                 if(input.length() != 1)
                     throw new IllegalArgumentException();
                 else
@@ -178,11 +168,8 @@ public class CAOClient
                         message = generateCourseRequest(courseID);
                         //TODO It's checking database before this line (before contacting server). Fix
 
-                        //Send message and listen for response
-                        output.println(message);
-                        response = scannerInput.nextLine();
-                        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
-                        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+                        serverSendAndReceive(message, response, scannerInput, output);
+                        //TODO Maybe read the response and break it up to display the course
 
                         /*
                         Course course = daoDriver.getCourseByCourseID(courseID);
@@ -193,8 +180,9 @@ public class CAOClient
                     case DISPLAY_ALL_COURSES:
                         message = generateAllCoursesRequest();
 
-                        serverSendAndReceive(message, response, scannerInput, output);
+                        response = serverSendAndReceive(message, response, scannerInput, output);
 
+                        parseResponseAllCourses(response);
                         /*
                         List<Course> allCourses = daoDriver.getAllCourses();
                         if(allCourses != null){
@@ -227,20 +215,39 @@ public class CAOClient
             catch(IllegalArgumentException iae)
             {
                 System.out.println(Colours.RED + "Please enter a valid option (IllegalArgumentException - " + iae.getMessage() + ")" + Colours.RESET);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void serverSendAndReceive(String message, String response, Scanner scannerInput, PrintWriter output){
+    private void parseResponseAllCourses(String response){
+        String[] courseComponents = response.split(CAOService.COURSE_SEPARATOR);
+        System.out.println("Displaying all courses...");
+
+        int courseIndex = 0;
+        for (String course : courseComponents) {
+            String[] fields = course.split(CAOService.BREAKING_CHARACTER);
+            int i = 0;
+            if(courseIndex == 0)
+                i++;
+            String courseID = fields[i];
+            String level = fields[i+1];
+            String title = fields[i+2];
+            String institution = fields[i+3];
+
+            System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
+            courseIndex++;
+        }
+    }
+
+    private String serverSendAndReceive(String message, String response, Scanner scannerInput, PrintWriter output){
         //Send message and listen for response
         output.println(message);
         response = scannerInput.nextLine();
-        System.out.println("Sent: " + Colours.GREEN + message + Colours.RESET);
-        System.out.println("Response: " + Colours.GREEN + response + Colours.RESET);
+        System.out.println("Sent: " + Colours.YELLOW + message + Colours.RESET);
+        System.out.println("Response: " + Colours.YELLOW + response + Colours.RESET);
+        return response;
     }
 
     private String generateRegisterRequest(Student student){
@@ -310,29 +317,4 @@ public class CAOClient
 
         return message.toString();
     }
-
-    /* May be revisited for server side of protocol in Deliverable 2
-    private String generateCourseRequest(Course course){
-        StringBuilder message = new StringBuilder(CAOService.DISPLAY_COURSE_COMMAND);
-        message.append(CAOService.BREAKING_CHARACTER);
-
-        String courseID = course.getCourseId();
-        String level = course.getLevel();
-        String title = course.getTitle();
-        String institution = course.getInstitution();
-
-        message.append(courseID);
-        message.append(CAOService.BREAKING_CHARACTER);
-
-        message.append(level);
-        message.append(CAOService.BREAKING_CHARACTER);
-
-        message.append(title);
-        message.append(CAOService.BREAKING_CHARACTER);
-
-        message.append(institution);
-
-        return message.toString();
-    }
-*/
 }

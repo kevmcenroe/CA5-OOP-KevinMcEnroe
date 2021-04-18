@@ -13,8 +13,6 @@ public class DisplayCourseCommand implements ICommand {
         else {
             //This approach was used for modularity and easy editing of response
             StringBuilder response = new StringBuilder();
-            response.append(CAOService.SUCCESSFUL_DISPLAY_COURSE);
-            response.append(CAOService.BREAKING_CHARACTER);
 
             response.append(gotCourse.getCourseId());
             response.append(CAOService.BREAKING_CHARACTER);

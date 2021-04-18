@@ -36,4 +36,6 @@ public class CAOService
     public static final String UPDATE_CHOICES_COMMAND = "UPDATE CURRENT";
     public static final String SUCCESSFUL_UPDATE_CHOICES = "SUCCESSFUL UPDATE CURRENT";
     public static final String FAILED_UPDATE_CHOICES = "FAILED UPDATE CURRENT";
+
+    public static final String COURSE_SEPARATOR = "##";
 }

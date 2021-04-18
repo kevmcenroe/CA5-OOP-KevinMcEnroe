@@ -12,4 +12,5 @@ public class Colours
     public static final String RED = "\u001b[31;1m";
     public static final String GREEN = "\u001b[32;1m";
     public static final String PURPLE= "\u001b[35;1m";
+    public static final String YELLOW = "\033[1;33m";
 }

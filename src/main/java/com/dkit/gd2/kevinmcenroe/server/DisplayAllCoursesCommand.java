@@ -28,6 +28,7 @@ public class DisplayAllCoursesCommand implements ICommand {
                 response.append(course.getTitle());
                 response.append(CAOService.BREAKING_CHARACTER);
                 response.append(course.getInstitution());
+                response.append(CAOService.COURSE_SEPARATOR);
             }
 
 
