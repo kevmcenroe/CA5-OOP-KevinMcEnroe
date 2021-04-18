@@ -84,6 +84,9 @@ public class CAOClient
 
                         if (response.equals(CAOService.SUCCESSFUL_LOGIN))
                             doLoggedInMenuLoop(studentToLogIn.getCaoNumber());
+                        else
+                            System.out.println(Colours.RED + "Invalid log in details" + Colours.RESET);
+
 
                         break;
                 }

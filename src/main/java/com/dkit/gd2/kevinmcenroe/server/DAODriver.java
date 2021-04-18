@@ -33,6 +33,7 @@ public class DAODriver
         try
         {
             System.out.println("\nLogging in student (CAO Number: " + student.getCaoNumber() + ")...");
+
             return IStudentDAO.logInStudent(student);
         }
         catch(DAOException daoe)

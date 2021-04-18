@@ -34,7 +34,7 @@ public class RegexChecker
         Matcher matcher = pattern.matcher(dateOfBirth);
 
         if(!matcher.matches()) {
-            System.out.println(Colours.RED + "Invalid Date of Birth" + Colours.RESET);
+            System.out.println(Colours.RED + "Invalid Date of Birth format" + Colours.RESET);
             return false;
         }
         else
@@ -50,7 +50,7 @@ public class RegexChecker
         Matcher matcher = pattern.matcher(password);
 
         if(!matcher.matches()) {
-            System.out.println(Colours.RED + "Invalid Password" + Colours.RESET);
+            System.out.println(Colours.RED + "Invalid Password format" + Colours.RESET);
             return false;
         }
         else
