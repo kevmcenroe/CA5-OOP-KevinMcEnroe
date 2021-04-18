@@ -93,7 +93,7 @@ public class RegexChecker
         }
         else
         {
-            System.out.println(Colours.GREEN + "Valid course ID pattern" + Colours.RESET);
+            //System.out.println(Colours.GREEN + "Valid course ID pattern" + Colours.RESET);
             return true;
         }
     }

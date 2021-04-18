@@ -11,10 +11,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
@@ -186,11 +183,22 @@ public class CAOClient
                         displayParsedCurrentChoices(response);
                         break;
                     case UPDATE_CURRENT_CHOICES:
-                        List<String> newChoices = menuManager.displayUpdateCourseChoicesMenu(loggedInCAONumber);
+                        //Get current choices first
+                        System.out.println("Retrieving up-to-date course list from the server to use in update menu..");
+                        message = generateAllCoursesRequest();
+                        response = serverSendAndReceive(message, response, scannerInput, output);
+                        List<String> allCourses = displayParsedAllCourses(response);
+
+                        List<String> newChoices = menuManager.displayUpdateCourseChoicesMenu(loggedInCAONumber, allCourses);
 
                         if(newChoices != null) {
                             message = generateUpdateChoicesRequest(loggedInCAONumber, newChoices);
                             serverSendAndReceive(message, response, scannerInput, output);
+
+                            System.out.println("Submitted choices...");
+                            for(int subChoiceIndex = 0; subChoiceIndex<newChoices.size(); subChoiceIndex++)
+                                System.out.print(Colours.GREEN + "[#"+ (subChoiceIndex+1) +"] "+ newChoices.get(subChoiceIndex) + " " + Colours.RESET);
+                            System.out.println();
                         }
                         break; // Exit the loop
                 }
@@ -225,10 +233,11 @@ public class CAOClient
             System.out.println(Colours.RED + "A course of given course ID does not exist" + Colours.RESET);
     }
 
-    private void displayParsedAllCourses(String response){
+    private List<String> displayParsedAllCourses(String response){
+        List<String> allCourseIDs = new ArrayList<>();
         if(!response.equals(CAOService.FAILED_DISPLAY_CHOICES)) {
             String[] courseComponents = response.split(CAOService.COURSE_SEPARATOR);
-            System.out.println("Displaying current choices...");
+            System.out.println("Displaying all courses...");
 
             int courseIndex = 0;
             for (String course : courseComponents) {
@@ -242,24 +251,29 @@ public class CAOClient
                 String institution = fields[i + 3];
 
                 System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
+                allCourseIDs.add(courseID);
                 courseIndex++;
             }
         }
         else
             System.out.println(Colours.RED + "No choices registered for that CAO number" + Colours.RESET);
+
+        return allCourseIDs;
     }
 
     private void displayParsedCurrentChoices(String response){
-        String[] choices = response.split(CAOService.BREAKING_CHARACTER);
-        System.out.println("Displaying current choices...");
+        if(!response.equals(CAOService.FAILED_DISPLAY_CHOICES)) {
+            String[] choices = response.split(CAOService.BREAKING_CHARACTER);
+            System.out.println("Displaying current choices...");
 
-        int choiceIndex = 0;
-        for (String choice : choices) {
-            if(choiceIndex != 0)
-                System.out.print(Colours.GREEN + "[#" + choiceIndex + "] " + choice + " " + Colours.RESET);
-            choiceIndex++;
+            int choiceIndex = 0;
+            for (String choice : choices) {
+                if (choiceIndex != 0)
+                    System.out.print(Colours.GREEN + "[#" + choiceIndex + "] " + choice + " " + Colours.RESET);
+                choiceIndex++;
+            }
+            System.out.println();
         }
-        System.out.println();
     }
 
     private String serverSendAndReceive(String message, String response, Scanner scannerInput, PrintWriter output){

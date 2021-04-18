@@ -4,6 +4,7 @@ package com.dkit.gd2.kevinmcenroe.client;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.Student;
 import com.dkit.gd2.kevinmcenroe.server.DAODriver;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +40,8 @@ public class MenuManager {
                     input = keyboard.nextLine();
                 }
                 return input;
-            case EXISTING_COURSE_ID:
-                while(!regexChecker.checkExistingCourseID(input)){
-                    System.out.print("Please enter " + request + " :>");
-                    input = keyboard.nextLine();
-                }
-                return input;
             case ANY_COURSE_ID:
-                while(!regexChecker.checkAnyCourseID(input)){
+                while(!input.equals("X") && !regexChecker.checkAnyCourseID(input)){
                     System.out.print("Please enter " + request + " :>");
                     input = keyboard.nextLine();
                 }
@@ -91,76 +86,36 @@ public class MenuManager {
 
     public String displayGetCourseMenu(){
         return getInput("Course ID", InputType.ANY_COURSE_ID);
-        // Original below checks if the given course code exists too early, preventing fulfillment of protocol fail response
-        // return getInput("Course ID", InputType.COURSE_ID);
     }
 
-    public List<String> displayUpdateCourseChoicesMenu(int caoNumber){
+    public List<String> displayUpdateCourseChoicesMenu(int caoNumber, List<String> allAvailableCourseIDs){
         List<String> newChoices = new ArrayList<>();
 
-        displayChoiceActionMenu();
+        System.out.println("Enter your 10 updated course choices");
 
-        int option;
-        String input = keyboard.nextLine();
-        if(input.length() != 1)
-            throw new IllegalArgumentException();
-        else
-            option = Integer.parseInt(input);
+        for(int i = 1; i<11; i++){
+            String courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
 
-        if(option < 0 || option >= LoggedInMenu.values().length)
-            throw new IllegalArgumentException();
+            while(!allAvailableCourseIDs.contains(courseID) && !courseID.equals("X")) {
+                System.out.println(Colours.RED + "Course ID \"" + courseID + "\" does not exist" + Colours.RESET);
+                courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
+            }
 
-        DAODriver daoDriver = new DAODriver();
-        ChoiceActions menuOption = ChoiceActions.values()[option];
-        switch (menuOption) {
-            case UPDATE_ALL_CHOICES:
-                System.out.println("Enter your 10 updated course choices");
+            while(newChoices.contains(courseID))
+            {
+                System.out.println(Colours.RED + "You have already submitted course ID \"" + courseID + "\" as a choice" + Colours.RESET);
+                courseID = getInput("Course ID [Choice " + i + "] or X to save and exit", InputType.ANY_COURSE_ID);
+            }
 
-                for(int i = 1; i<11; i++){
-                    if(i>1)
-                        System.out.println();
-
-                    String courseID = getInput("Course ID [Choice " + i + "]", InputType.EXISTING_COURSE_ID);
-                    while(newChoices.contains(courseID))
-                    {
-                        System.out.println(Colours.RED + "You have already submitted course ID \"" + courseID + "\" as a choice" + Colours.RESET);
-                        courseID = getInput("Course ID [Choice " + i + "]", InputType.EXISTING_COURSE_ID);
-                    }
-                    newChoices.add(courseID);
-                }
-
-                System.out.println("\nSubmitted choices:");
-                for(int i = 0; i<newChoices.size(); i++)
-                {
-                    System.out.println("[Choice "+ (i+1) +"]"+ newChoices.get(i));
-                }
-                return  newChoices;
-            case UPDATE_ONE_CHOICE:
-                //I developed this option to address choice update feedback from CA4
-                List<String> currentChoices = daoDriver.getCourseChoices(caoNumber);
-                if (currentChoices != null) {
-                    newChoices = displayChangeChoiceMenu(caoNumber);
-                    return newChoices;
-                }
-                else
-                {
-                    System.out.println(Colours.RED + "Initial course choices required for this action. Please use UPDATE ALL CHOICES to submit your first preferences" + Colours.RESET);
-                    return null;
-                }
+            if(courseID.equals("X")) {
+                System.out.println("Saved and sent course choices");
+                break;
+            }
+            else
+                newChoices.add(courseID);
         }
 
-        //Default to returning the existing choices
-        return daoDriver.getCourseChoices(caoNumber);
-    }
-
-    private void displayChoiceActionMenu(){
-        System.out.println("\nMenu Options:");
-        for(int i = 0; i < ChoiceActions.values().length; i++)
-        {
-            String menuOption = ChoiceActions.values()[i].toString().replaceAll("_", "_");
-            System.out.println("\t" + Colours.BLUE + i + ". " + menuOption + Colours.RESET);
-        }
-        System.out.println("Enter the corresponding number to select an option");
+        return  newChoices;
     }
 
     public void displayCurrentChoices(int caoNumber){
