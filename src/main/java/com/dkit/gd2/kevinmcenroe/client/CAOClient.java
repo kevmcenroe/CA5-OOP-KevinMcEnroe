@@ -36,6 +36,7 @@ public class CAOClient
         boolean loop = true;
         int option;
         MenuManager menuManager = new MenuManager();
+        RequestGenerator requestGenerator = new RequestGenerator();
 
         while(loop)
         {
@@ -67,12 +68,12 @@ public class CAOClient
                         break;
                     case REGISTER:
                         StudentDTO studentToRegister = menuManager.displayStudentMenu();
-                        message = generateRegisterRequest(studentToRegister);
+                        message = requestGenerator.generateRegisterRequest(studentToRegister);
                         serverSendAndReceive(message, scannerInput, output);
                         break;
                     case LOGIN:
                         StudentDTO studentToLogIn = menuManager.displayStudentMenu();
-                        message = generateLogInRequest(studentToLogIn);
+                        message = requestGenerator.generateLogInRequest(studentToLogIn);
                         response = serverSendAndReceive(message, scannerInput, output);
 
                         if (response.equals(CAOService.SUCCESSFUL_LOGIN))
@@ -113,6 +114,7 @@ public class CAOClient
         boolean loop = true;
         int option;
         MenuManager menuManager = new MenuManager();
+        RequestGenerator requestGenerator = new RequestGenerator();
 
         while(loop)
         {
@@ -145,7 +147,7 @@ public class CAOClient
                         break;
                     case LOGOUT:
                         System.out.println("\nLogging out...");
-                        message = generateLogOutRequest();
+                        message = requestGenerator.generateLogOutRequest();
                         serverSendAndReceive(message, scannerInput, output);
 
                         loggedInCAONumber = -1;
@@ -154,34 +156,34 @@ public class CAOClient
                         break;
                     case DISPLAY_COURSE:
                         String courseID = menuManager.displayGetCourseMenu();
-                        message = generateCourseRequest(courseID);
+                        message = requestGenerator.generateCourseRequest(courseID);
                         response = serverSendAndReceive(message, scannerInput, output);
 
-                        displayParsedCourse(response);
+                        menuManager.displayParsedCourse(response);
                         break;
                     case DISPLAY_ALL_COURSES:
-                        message = generateAllCoursesRequest();
+                        message = requestGenerator.generateAllCoursesRequest();
                         response = serverSendAndReceive(message, scannerInput, output);
 
-                        displayParsedAllCourses(response);
+                        menuManager.displayParsedAllCourses(response);
                         break;
                     case DISPLAY_CURRENT_CHOICES:
-                        message = generateCurrentChoicesRequest(loggedInCAONumber);
+                        message = requestGenerator.generateCurrentChoicesRequest(loggedInCAONumber);
                         response = serverSendAndReceive(message, scannerInput, output);
 
-                        displayParsedCurrentChoices(response);
+                        menuManager.displayParsedCurrentChoices(response);
                         break;
                     case UPDATE_CURRENT_CHOICES:
                         //Get all courses for later input validation
                         System.out.println("Retrieving up-to-date course list from the server for update validation..");
-                        message = generateAllCoursesRequest();
+                        message = requestGenerator.generateAllCoursesRequest();
                         response = serverSendAndReceive(message, scannerInput, output);
-                        List<String> allCourses = displayParsedAllCourses(response);
+                        List<String> allCourses = menuManager.displayParsedAllCourses(response);
 
                         List<String> newChoices = menuManager.displayUpdateCourseChoicesMenu(loggedInCAONumber, allCourses);
 
                         if(newChoices != null) {
-                            message = generateUpdateChoicesRequest(loggedInCAONumber, newChoices);
+                            message = requestGenerator.generateUpdateChoicesRequest(loggedInCAONumber, newChoices);
                             serverSendAndReceive(message, scannerInput, output);
 
                             System.out.println("Submitted choices...");
@@ -208,64 +210,6 @@ public class CAOClient
         }
     }
 
-    private void displayParsedCourse(String response){
-        if(!response.equals(CAOService.FAILED_DISPLAY_COURSE)) {
-            String[] fields = response.split(CAOService.BREAKING_CHARACTER);
-            System.out.println("Displaying course...");
-
-            String courseID = fields[0];
-            String level = fields[1];
-            String title = fields[2];
-            String institution = fields[3];
-
-            System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
-        }
-        else
-            System.out.println(Colours.RED + "A course of given course ID does not exist" + Colours.RESET);
-    }
-
-    private List<String> displayParsedAllCourses(String response){
-        List<String> allCourseIDs = new ArrayList<>();
-        if(!response.equals(CAOService.FAILED_DISPLAY_CHOICES)) {
-            String[] courseComponents = response.split(CAOService.COURSE_SEPARATOR);
-            System.out.println("Displaying all courses...");
-
-            int courseIndex = 0;
-            for (String course : courseComponents) {
-                String[] fields = course.split(CAOService.BREAKING_CHARACTER);
-                int i = 0;
-                if (courseIndex == 0)
-                    i++;
-                String courseID = fields[i];
-                String level = fields[i + 1];
-                String title = fields[i + 2];
-                String institution = fields[i + 3];
-
-                System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
-                allCourseIDs.add(courseID);
-                courseIndex++;
-            }
-        }
-        else
-            System.out.println(Colours.RED + "No choices registered for that CAO number" + Colours.RESET);
-
-        return allCourseIDs;
-    }
-
-    private void displayParsedCurrentChoices(String response){
-        if(!response.equals(CAOService.FAILED_DISPLAY_CHOICES)) {
-            String[] choices = response.split(CAOService.BREAKING_CHARACTER);
-            System.out.println("Displaying current choices...");
-
-            int choiceIndex = 0;
-            for (String choice : choices) {
-                if (choiceIndex != 0)
-                    System.out.print(Colours.GREEN + "[#" + choiceIndex + "] " + choice + " " + Colours.RESET);
-                choiceIndex++;
-            }
-            System.out.println();
-        }
-    }
 
     private String serverSendAndReceive(String message, Scanner scannerInput, PrintWriter output){
         //Send message and listen for response
@@ -276,67 +220,5 @@ public class CAOClient
         return response;
     }
 
-    private String generateRegisterRequest(StudentDTO student){
-        StringBuilder message = new StringBuilder(CAOService.REGISTER_COMMAND);
-        message.append(CAOService.BREAKING_CHARACTER);
 
-        String caoNumber = Integer.toString(student.getCaoNumber());
-        String dateOfBirth = student.getDayOfBirth();
-        String password = student.getPassword();
-
-        message.append(caoNumber);
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(dateOfBirth);
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(password);
-
-        return message.toString();
-    }
-
-    private String generateLogInRequest(StudentDTO student){
-        StringBuilder message = new StringBuilder(CAOService.LOGIN_COMMAND);
-        message.append(CAOService.BREAKING_CHARACTER);
-
-        String caoNumber = Integer.toString(student.getCaoNumber());
-        String dateOfBirth = student.getDayOfBirth();
-        String password = student.getPassword();
-
-        message.append(caoNumber);
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(dateOfBirth);
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(password);
-
-        return message.toString();
-    }
-
-    private String generateLogOutRequest(){
-        return CAOService.LOGOUT_COMMAND;
-    }
-
-    private String generateCourseRequest(String courseID){
-        return CAOService.DISPLAY_COURSE_COMMAND + CAOService.BREAKING_CHARACTER + courseID;
-    }
-
-    private String generateAllCoursesRequest(){
-        return CAOService.DISPLAY_ALL_COURSES_COMMAND;
-    }
-
-    private String generateCurrentChoicesRequest(int caoNumber){
-        return CAOService.DISPLAY_CHOICES_COMMAND + CAOService.BREAKING_CHARACTER + caoNumber;
-    }
-
-    private String generateUpdateChoicesRequest(int caoNumber, List<String> newChoices){
-        StringBuilder message = new StringBuilder(CAOService.UPDATE_CHOICES_COMMAND);
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(caoNumber);
-
-        if(newChoices != null)
-            for(String choice : newChoices){
-                message.append(CAOService.BREAKING_CHARACTER);
-                message.append(choice);
-            }
-
-        return message.toString();
-    }
 }

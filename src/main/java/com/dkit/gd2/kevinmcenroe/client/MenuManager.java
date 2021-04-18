@@ -1,6 +1,7 @@
 //Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.client;
 
+import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.Colours;
 import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
 
@@ -117,6 +118,66 @@ public class MenuManager {
         }
 
         return courseID;
+    }
+
+
+    public void displayParsedCourse(String response){
+        if(!response.equals(CAOService.FAILED_DISPLAY_COURSE)) {
+            String[] fields = response.split(CAOService.BREAKING_CHARACTER);
+            System.out.println("Displaying course...");
+
+            String courseID = fields[0];
+            String level = fields[1];
+            String title = fields[2];
+            String institution = fields[3];
+
+            System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
+        }
+        else
+            System.out.println(Colours.RED + "A course of given course ID does not exist" + Colours.RESET);
+    }
+
+    public List<String> displayParsedAllCourses(String response){
+        List<String> allCourseIDs = new ArrayList<>();
+        if(!response.equals(CAOService.FAILED_DISPLAY_CHOICES)) {
+            String[] courseComponents = response.split(CAOService.COURSE_SEPARATOR);
+            System.out.println("Displaying all courses...");
+
+            int courseIndex = 0;
+            for (String course : courseComponents) {
+                String[] fields = course.split(CAOService.BREAKING_CHARACTER);
+                int i = 0;
+                if (courseIndex == 0)
+                    i++;
+                String courseID = fields[i];
+                String level = fields[i + 1];
+                String title = fields[i + 2];
+                String institution = fields[i + 3];
+
+                System.out.println(Colours.GREEN + "Course ID = " + courseID + ", Level = " + level + ", Title = " + title + ", Institution = " + institution + Colours.RESET);
+                allCourseIDs.add(courseID);
+                courseIndex++;
+            }
+        }
+        else
+            System.out.println(Colours.RED + "No choices registered for that CAO number" + Colours.RESET);
+
+        return allCourseIDs;
+    }
+
+    public void displayParsedCurrentChoices(String response){
+        if(!response.equals(CAOService.FAILED_DISPLAY_CHOICES)) {
+            String[] choices = response.split(CAOService.BREAKING_CHARACTER);
+            System.out.println("Displaying current choices...");
+
+            int choiceIndex = 0;
+            for (String choice : choices) {
+                if (choiceIndex != 0)
+                    System.out.print(Colours.GREEN + "[#" + choiceIndex + "] " + choice + " " + Colours.RESET);
+                choiceIndex++;
+            }
+            System.out.println();
+        }
     }
 
     /* The following code was redeveloped to maintain client/server encapsulation and avoid DAODriver access from Client
