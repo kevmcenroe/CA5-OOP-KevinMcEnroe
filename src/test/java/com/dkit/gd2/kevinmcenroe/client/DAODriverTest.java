@@ -1,6 +1,7 @@
 //Kevin McEnroe D00242092
 package com.dkit.gd2.kevinmcenroe.client;
 
+import com.dkit.gd2.kevinmcenroe.core.CAOService;
 import com.dkit.gd2.kevinmcenroe.core.CourseDTO;
 import com.dkit.gd2.kevinmcenroe.core.StudentDTO;
 import com.dkit.gd2.kevinmcenroe.server.*;
@@ -12,13 +13,54 @@ import java.util.List;
 public class DAODriverTest extends TestCase {
 
     public void testRegisterStudent() throws DAOException {
-        StudentDTO student = new StudentDTO(87654321, "1999-01-01", "mypassword");
-        IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
+        RegisterCommand registerCommand = new RegisterCommand();
+        DAODriver daoDriver = new DAODriver();
 
-        IStudentDAO.registerStudent(student);
+        String[] componentsA = {"REGISTER", "12345678", "1999-8-8", "Password"};
+        String expectedResultA = CAOService.FAILED_REGISTER;
+        String actualResultA = registerCommand.generateResponse(componentsA, daoDriver);
+        assertEquals(expectedResultA, actualResultA);
 
-        boolean registered = IStudentDAO.isRegistered(student.getCaoNumber());
-        assertTrue(registered);
+        //A unique CAO number should be specified here for the following test
+        String[] componentsB = {"REGISTER", "12344334", "1999-8-8", "Password"};
+        String expectedResultB = CAOService.SUCCESSFUL_REGISTER;
+        String actualResultB = registerCommand.generateResponse(componentsB, daoDriver);
+        assertEquals(expectedResultB, actualResultB);
+    }
+
+    public void testGetCourseByCourseID() throws DAOException {
+        DisplayCourseCommand courseCommand = new DisplayCourseCommand();
+        DAODriver daoDriver = new DAODriver();
+
+        //DISPLAY COURSE&&DK001
+        String[] componentsA = {"DISPLAY COURSE", "DK001"};
+        String expectedResultA = "DK001%%8%%Accounting and Finance%%DKIT";
+        String actualResultA = courseCommand.generateResponse(componentsA, daoDriver);
+        assertEquals(expectedResultA, actualResultA);
+
+        //Non-existent course
+        String[] componentsB = {"DISPLAY COURSE", "TEST999"};
+        String expectedResultB = CAOService.FAILED_DISPLAY_COURSE;
+        String actualResultB = courseCommand.generateResponse(componentsB, daoDriver);
+        assertEquals(expectedResultB, actualResultB);
+    }
+
+    public void testLogInStudent() throws DAOException {
+        LoginCommand loginCommand = new LoginCommand();
+        DAODriver daoDriver = new DAODriver();
+
+        //LOGIN%%12345678%%2000-01-01%%password1
+        String[] componentsA = {"LOGIN", "12345678", "2000-01-01", "password1"};
+        String expectedResultA = CAOService.SUCCESSFUL_LOGIN;
+        String actualResultA = loginCommand.generateResponse(componentsA, daoDriver);
+        assertEquals(expectedResultA, actualResultA);
+
+        //Incorrect details
+        //LOGIN%%12345678%%2000-01-01%%wrongpassword
+        String[] componentsB = {"LOGIN", "12345678", "2000-01-01", "wrongpassword"};
+        String expectedResultB = CAOService.FAILED_LOGIN;
+        String actualResultB = loginCommand.generateResponse(componentsB, daoDriver);
+        assertEquals(expectedResultB, actualResultB);
     }
 
     public void testIsRegistered() throws DAOException {
@@ -34,30 +76,6 @@ public class DAODriverTest extends TestCase {
         boolean unregistered = IStudentDAO.isRegistered(unregStudent.getCaoNumber());
         boolean invalidLogIn = IStudentDAO.logInStudent(unregStudent);
         assertEquals(unregistered, invalidLogIn);
-    }
-
-    public void testGetCourseByCourseID() throws DAOException {
-        ICourseDAOInterface ICourseDAO = new MySqlCourseDAO();
-
-        String courseID = "DK001";
-        //The test requires that a course of this ID exist in the database
-        //This courseID can be changed to match any other existing course
-
-        CourseDTO gotCourse = ICourseDAO.getCourseByID(courseID);
-        assertEquals(gotCourse.getCourseId(), courseID);
-    }
-
-    public void testLogInStudent() throws DAOException {
-        StudentDTO regStudent = new StudentDTO(99999991, "2000-02-02", "password2");
-        IStudentDAOInterface IStudentDAO = new MySqlStudentDAO();
-        IStudentDAO.registerStudent(regStudent);
-
-        boolean validLogIn = IStudentDAO.logInStudent(regStudent);
-        assertTrue(validLogIn);
-
-        StudentDTO unregStudent = new StudentDTO(99999992, "1999-09-09", "password9");
-        boolean invalidLogIn = IStudentDAO.logInStudent(unregStudent);
-        assertFalse(invalidLogIn);
     }
 
     public void testGetAllCourses() throws DAOException {
@@ -120,7 +138,7 @@ public class DAODriverTest extends TestCase {
         String courseAA ="DK001";
         String courseAB = "DK002";
         String courseAC = "DK003";
-        String courseAD ="DK004";
+        String courseAD = "DK004";
         String courseAE = "DK005";
         String courseAF = "DK006";
         String courseAG = "DK007";
@@ -243,4 +261,6 @@ public class DAODriverTest extends TestCase {
         List<String> oneUpdatedChoices = daoDriver.getCourseChoices(caoNumber);
         assertEquals(choices, oneUpdatedChoices);
     }
+
+
 }

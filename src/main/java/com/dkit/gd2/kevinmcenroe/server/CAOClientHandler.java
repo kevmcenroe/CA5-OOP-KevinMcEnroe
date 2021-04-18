@@ -33,13 +33,14 @@ public class CAOClientHandler implements Runnable
             PrintWriter clientOutput = new PrintWriter(clientSocket.getOutputStream(), true);
 
             boolean sessionActive = true;
+            System.out.println("Waiting for client input");
             while(sessionActive)
             {
                 //NextLine() is blocking so the program execution waits there until it receives a request
-                System.out.println("Waiting for client input");
+
                 String request = clientInput.nextLine();
 
-                System.out.println("Received: " +Colours.GREEN + request + Colours.RESET);
+                System.out.println("Received: " +Colours.YELLOW + request + Colours.RESET);
                 String[] components = request.split(CAOService.BREAKING_CHARACTER);
                 String response;
 
@@ -51,7 +52,7 @@ public class CAOClientHandler implements Runnable
                     if (response != null)
                     {
                         clientOutput.println(response);
-                        System.out.println("Sent: " +Colours.GREEN + response + Colours.RESET);
+                        System.out.println("Sent: " +Colours.YELLOW + response + Colours.RESET);
                     }
                 }
             }
